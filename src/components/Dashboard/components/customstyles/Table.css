@@ -1,0 +1,11 @@
+table, th, td {
+    border-collapse: collapse;
+    border-spacing: 30px;
+  }
+  table {
+    width: 100%;
+  }
+
+th, td {
+    padding: 10px 40px;
+}

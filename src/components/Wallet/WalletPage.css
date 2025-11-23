@@ -1,0 +1,281 @@
+    :root {
+      --primary-color: #1a73e8;
+      --secondary-color: #f4f6f9;
+      --accent-color: #0f5bc4;
+      --text-color: #333;
+      --border-color: #ddd;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --success-color: #34a853;
+      --pending-color: #fbbc05;
+      --border-radius: 10px;
+    }
+
+    .wallet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .wallet-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .wallet-label {
+      font-size: 14px;
+    }
+
+    .wallet-balance {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-color);
+    }
+
+    .btn-outlined {
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn-outlined:hover {
+      background-color: rgba(26, 115, 232, 0.1);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary-color);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #555;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(0, 0, 0, 0.01);
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .status-received {
+      background-color: rgba(52, 168, 83, 0.1);
+      color: var(--success-color);
+    }
+
+    .status-pending {
+      background-color: rgba(251, 188, 5, 0.1);
+      color: var(--pending-color);
+    }
+
+    .status-completed {
+      background-color: rgba(52, 168, 83, 0.1);
+      color: var(--success-color);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .modal-content input:focus,
+    .modal-content select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    .modal-content button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .modal-content button:hover {
+      background-color: var(--accent-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+      color: #666;
+    }
+
+    .empty-state p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .wallet-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .action-buttons {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .tab {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
