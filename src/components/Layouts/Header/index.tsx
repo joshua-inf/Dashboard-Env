@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Copy, Download, KeyRound, PowerIcon, User2Icon, QrCodeIcon } from "lucide-react";
 import { QRCodeCanvas } from 'qrcode.react';
 import DarkModeSwitcher from "./DarkModeSwitcher";
+import DropdownNotification from "../../Notifications/DropdownNotification";
 import { getOrgData, removeData, removeOrgData } from "@/lib/createCookie";
 import { BusinessType } from "@/types/businesses";
 import LightDarkLogo from "@/components/Logo";
@@ -138,7 +139,7 @@ const Header = ({
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4"> 
+          <div className="flex items-center gap-4">
             {userData ? (
               <>
                 {/* Search Bar */}
@@ -147,7 +148,7 @@ const Header = ({
                 </div> */}
 
                 {/* Notifications */}
-                {/* <DropdownNotification /> */}
+                <DropdownNotification />
 
                 {/* Dark Mode Toggle */}
                 <DarkModeSwitcher />
@@ -209,7 +210,7 @@ const Header = ({
         {/* QR Code Modal */}
         {modalOpen && (
           <>
-          <div className="fixed top-0 h-screen left-0 right-0 flex justify-center items-center">
+            <div className="fixed top-0 h-screen left-0 right-0 flex justify-center items-center">
               <div
                 className="fixed inset-0  h-screen  bg-black/50 backdrop-blur-lg z-[60]"
                 onClick={() => setModalOpen(false)}
@@ -277,7 +278,7 @@ const Header = ({
                   )}
                 </div>
               </div>
-          </div>
+            </div>
           </>
         )}
       </header>
