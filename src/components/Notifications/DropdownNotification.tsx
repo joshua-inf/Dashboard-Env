@@ -1,9 +1,11 @@
+'use client'
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { BellIcon, CheckCircleIcon, ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
-import ClickOutside from "../Layouts/ClickOutside";
 import { getOrgData } from "@/lib/createCookie";
 import { NotificationService } from "@/services/apiNotification";
+import ClickOutside from "../Layouts/ClickOutside";
+import { useRouter } from "next/navigation";
 
 interface NotificationDB {
   id: string;
@@ -32,26 +34,26 @@ const DropdownNotification = () => {
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationDB[]>([]);
+  const router = useRouter();
 
   const unreadCount = notifications.filter(n => n.status === 'unread').length;
 
   const handleNotificationClick = async (notification: NotificationDB) => {
-    if (notification.status === 'unread') {
-      try {
-        // Mark as read via API
+    try {
+      // Mark as read if unread
+      if (notification.status === 'unread') {
         await notificationService.markAsRead(notification.id);
 
         // Update local state
         setNotifications(notifications.map(n =>
-          n.id === notification.id ? {
-            ...n,
-            status: 'read',
-            read_at: new Date().toISOString()
-          } : n
+          n.id === notification.id ? { ...n, status: 'read', read_at: new Date().toISOString() } : n
         ));
-      } catch (error) {
-        console.error("Error marking notification as read:", error);
       }
+
+      // Navigate to the notification detail page
+      router.push(`/notifications/${notification.id}`);
+    } catch (error) {
+      console.error("Error handling notification click:", error);
     }
   };
 
@@ -91,24 +93,24 @@ const DropdownNotification = () => {
   }, [getNotifications]);
 
   const getTypeIcon = (type: NotificationDB['notification_type']) => {
-    const icons = {
+    const icons: Record<string, any> = {
       success: CheckCircleIcon,
       warning: ExclamationTriangleIcon,
       error: ExclamationTriangleIcon,
       info: InformationCircleIcon
     };
-    const Icon = icons[type];
+    const Icon = icons[type] ?? InformationCircleIcon; // fallback
     return <Icon className="h-4 w-4" />;
   };
 
   const getTypeColor = (type: NotificationDB['notification_type']) => {
-    const colors = {
+    const colors: Record<string, string> = {
       success: 'text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
       warning: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400',
       error: 'text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
       info: 'text-blue-600 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400'
     };
-    return colors[type];
+    return colors[type] ?? 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
   };
 
   const getPriorityColor = (priority: NotificationDB['priority']) => {
@@ -179,10 +181,17 @@ const DropdownNotification = () => {
             {/* Notifications List */}
             <div className="max-h-96 overflow-y-auto">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading notifications...</p>
-                </div>
+                <ul className="divide-y divide-gray-100 dark:divide-gray-700">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <li key={idx} className="p-4 flex gap-3 animate-pulse">
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
                   <div className="rounded-full bg-gray-100 p-3 dark:bg-gray-700 mb-3">
@@ -203,9 +212,13 @@ const DropdownNotification = () => {
                           }`}
                       >
                         {/* Type Icon */}
-                        <div className={`p-2 rounded-lg ${getTypeColor(notification.notification_type)} flex-shrink-0`}>
-                          {getTypeIcon(notification.notification_type)}
-                        </div>
+                        {notification.notification_type && (
+                          <div className="flex items-start gap-2">
+                            <div className={`p-2 rounded-lg ${getTypeColor(notification.notification_type)} flex-shrink-0`}>
+                              {getTypeIcon(notification.notification_type)}
+                            </div>
+                          </div>
+                        )}
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between mb-1">

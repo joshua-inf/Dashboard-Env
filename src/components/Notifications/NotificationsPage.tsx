@@ -72,24 +72,24 @@ const NotificationsPage = () => {
     };
 
     const getTypeIcon = (type: NotificationDB['notification_type']) => {
-        const icons = {
+        const icons: Record<string, any> = {
             success: CheckCircleIcon,
             warning: ExclamationTriangleIcon,
             error: ExclamationTriangleIcon,
             info: InformationCircleIcon
         };
-        const Icon = icons[type];
-        return <Icon className="h-5 w-5" />;
+        const Icon = icons[type] ?? InformationCircleIcon; // fallback
+        return <Icon className="h-4 w-4" />;
     };
 
     const getTypeColor = (type: NotificationDB['notification_type']) => {
-        const colors = {
+        const colors: Record<string, string> = {
             success: 'text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
             warning: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400',
             error: 'text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
             info: 'text-blue-600 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400'
         };
-        return colors[type];
+        return colors[type] ?? 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
     };
 
     const getPriorityColor = (priority: NotificationDB['priority']) => {
@@ -358,7 +358,7 @@ const NotificationsPage = () => {
                                                     </Link>
                                                     <button
                                                         onClick={() => deleteNotification(notification.id)}
-                                                        className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                                        className="p-1 hidden text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                                     >
                                                         <TrashIcon className="h-4 w-4" />
                                                     </button>

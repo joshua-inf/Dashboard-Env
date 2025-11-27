@@ -15,15 +15,17 @@ import {
     DocumentTextIcon
 } from "@heroicons/react/24/outline";
 import { NotificationDB } from "@/types/Notification";
+import { getOrgData } from "@/lib/createCookie";
+import { NotificationService } from "@/services/apiNotification";
 
 
 const NotificationDetailPage = () => {
     const params = useParams();
     const router = useRouter();
     const notificationId = params.id as string;
-
     const [notification, setNotification] = useState<NotificationDB | null>(null);
     const [loading, setLoading] = useState(true);
+    const notificationService = new NotificationService()
 
     // Mock data - replace with actual API call
     const notificationsData: NotificationDB[] = [
@@ -70,31 +72,29 @@ const NotificationDetailPage = () => {
         // ... include all other notifications
     ];
 
-    useEffect(() => {
-        // Simulate API call
-        const fetchNotification = async () => {
-            setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const foundNotification = notificationsData.find(n => n.id === notificationId);
-            if (foundNotification && foundNotification.status === 'unread') {
-                // Mark as read when viewing
-                setNotification({
-                    ...foundNotification,
-                    status: 'read',
-                    read_at: new Date().toISOString()
-                });
-            } else {
-                setNotification(foundNotification || null);
+    const getNotification = useCallback(async () => {
+        try {
+            setLoading(true)
+            const notification = await notificationService.getNotificationById(notificationId)
+            if (notification) {
+                setNotification(notification)
             }
-            setLoading(false);
-        };
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }, [notificationId])
 
-        fetchNotification();
-    }, [notificationId]);
+    useEffect(() => {
+        getNotification()
+    }, [getNotification]);
 
-    const markAsRead = () => {
-        if (notification && notification.status === 'unread') {
+    const markAsRead = async () => {
+        if (!notificationId) return;
+        await notificationService.markAsRead(notificationId);
+
+        if (notification?.status === 'unread') {
             setNotification({
                 ...notification,
                 status: 'read',
@@ -103,8 +103,10 @@ const NotificationDetailPage = () => {
         }
     };
 
-    const dismissNotification = () => {
-        if (notification) {
+    const dismissNotification = async () => {
+        if (!notificationId) return;
+        await notificationService.dismissNotification(notificationId);
+        if (notification?.status === 'unread') {
             setNotification({
                 ...notification,
                 status: 'dismissed',
@@ -119,24 +121,24 @@ const NotificationDetailPage = () => {
     };
 
     const getTypeIcon = (type: NotificationDB['notification_type']) => {
-        const icons = {
+        const icons: Record<string, any> = {
             success: CheckCircleIcon,
             warning: ExclamationTriangleIcon,
             error: ExclamationTriangleIcon,
             info: InformationCircleIcon
         };
-        const Icon = icons[type];
-        return <Icon className="h-6 w-6" />;
+        const Icon = icons[type] ?? InformationCircleIcon; // fallback
+        return <Icon className="h-4 w-4" />;
     };
 
     const getTypeColor = (type: NotificationDB['notification_type']) => {
-        const colors = {
+        const colors: Record<string, string> = {
             success: 'text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
             warning: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400',
             error: 'text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
             info: 'text-blue-600 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400'
         };
-        return colors[type];
+        return colors[type] ?? 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
     };
 
     const getPriorityColor = (priority: NotificationDB['priority']) => {
@@ -147,6 +149,7 @@ const NotificationDetailPage = () => {
         };
         return colors[priority];
     };
+
 
     const getCategoryColor = (category: NotificationDB['category']) => {
         const colors = {
@@ -244,7 +247,7 @@ const NotificationDetailPage = () => {
                             )}
                             <button
                                 onClick={deleteNotification}
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                                className="flex hidden items-center gap-2 px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                             >
                                 <TrashIcon className="h-4 w-4" />
                                 Delete
@@ -333,12 +336,6 @@ const NotificationDetailPage = () => {
                                     <DocumentTextIcon className="h-4 w-4" />
                                     This notification requires your attention
                                 </div>
-                                <Link
-                                    href={notification.action_url}
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                                >
-                                    {notification.action_label}
-                                </Link>
                             </div>
                         </div>
                     )}
@@ -400,18 +397,6 @@ const NotificationDetailPage = () => {
                             </div>
                         )}
                     </div>
-
-                    {/* Metadata */}
-                    {Object.keys(notification.metadata).length > 0 && (
-                        <div className="mt-6">
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Metadata</h4>
-                            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                                    {JSON.stringify(notification.metadata, null, 2)}
-                                </pre>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

@@ -60,7 +60,28 @@ export class NotificationService {
                 return null;
             }
 
-            console.log("User notifications fetched successfully:", data);
+            // console.log("User notifications fetched successfully:", data);
+            return data;
+        } catch (err) {
+            console.error("Unexpected error fetching notifications:", err);
+            return null;
+        }
+    }
+
+    async getNotificationById(notificationID: string): Promise<NotificationDB | null> {
+        try {
+            const { data, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq("id", notificationID)
+                .single();
+
+            if (error) {
+                console.error("Error fetching notifications:", error.message);
+                return null;
+            }
+
+            // console.log("User notifications fetched successfully:", data);
             return data;
         } catch (err) {
             console.error("Unexpected error fetching notifications:", err);
@@ -109,12 +130,32 @@ export class NotificationService {
         }
     }
 
+    async dismissNotification(notificationid: string): Promise<boolean> {
+        try {
+            const { error } = await supabase
+                .from('notifications')
+                .update({ status: 'dismissed' })
+                .eq('id', notificationid);
+
+            if (error) {
+                console.error("Error dismissing notification:", error.message);
+                return false;
+            }
+
+            console.log("Notification dismissed successfully");
+            return true;
+        } catch (err) {
+            console.error("Unexpected error dismissing notification:", err);
+            return false;
+        }
+    }
+
     async markAsRead(notificationid: string): Promise<boolean> {
         try {
             const { error } = await supabase
                 .from('notifications')
-                .update({ status: 'Read' })
-                .eq('notification_id', notificationid);
+                .update({ status: 'read' })
+                .eq('id', notificationid);
 
             if (error) {
                 console.error("Error marking notification as read:", error.message);
