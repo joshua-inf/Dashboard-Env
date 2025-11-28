@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CartItem } from '../Pos';
 import { CheckCircle2, Mail, Minus, Plus, ShoppingCart, Trash2, User, X } from 'lucide-react';
-import { StepByStepTransaction } from './ConfirmDialog';
+import { StepByStepTransaction, StepByStepTransaction2 } from './ConfirmDialog';
 import { Customers } from '@/types/Customers';
 
 
@@ -13,7 +13,7 @@ interface CartInterface {
     paymentStep: string
     setPaymentStep: (data: string) => void
     cashAmount: string
-    setPayableUSerData: (data:Partial<Customers>) => void
+    setPayableUSerData: (data: Partial<Customers> | null) => void
     calculateChange: (number: string) => void
     setCustomerName: (number: string) => void
     setCustomerEmail: (number: string) => void
@@ -24,14 +24,16 @@ interface CartInterface {
     processPayment: () => void
 }
 
-export const CartPaymentSection = ({ cart,setPayableUSerData, setCart, customerName, customerEmail, setCustomerName, setCustomerEmail, updateQuantity, changeAmount, calculateChange, removeFromCart, paymentStep, selectedPayment, setPaymentStep, cashAmount, processPayment }: CartInterface) => {
+export const CartPaymentSection = ({ cart, setPayableUSerData, setCart, customerName, customerEmail, setCustomerName, setCustomerEmail, updateQuantity, changeAmount, calculateChange, removeFromCart, paymentStep, selectedPayment, setPaymentStep, cashAmount, processPayment }: CartInterface) => {
     const [showDialog, setShowDialog] = useState(false)
+    const [showDialog2, setShowDialog2] = useState(false)
     const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
     const discount = 0; // Can be implemented later
     const total = subtotal - discount;
 
 
-    const handleConfirm = () => {
+    const handleConfirm = (userData: Partial<Customers> | null) => {
+        setPayableUSerData(userData)
         console.log("Processing Payment...")
         processPayment()
         setShowDialog(false)
@@ -41,8 +43,13 @@ export const CartPaymentSection = ({ cart,setPayableUSerData, setCart, customerN
         <>
             <StepByStepTransaction
                 isOpen={showDialog}
-                setPayableUSerData={setPayableUSerData}
                 onClose={() => setShowDialog(false)}
+                onComplete={handleConfirm}
+            />
+
+            <StepByStepTransaction2
+                isOpen={showDialog2}
+                onClose={() => setShowDialog2(false)}
                 onComplete={handleConfirm}
             />
             <div className="space-y-6">
@@ -120,13 +127,25 @@ export const CartPaymentSection = ({ cart,setPayableUSerData, setCart, customerN
                                 <span className="text-blue-500 dark:text-blue-400">K{total.toFixed(2)}</span>
                             </div>
 
-                            <button
-                                onClick={() => setShowDialog(true)}
-                                disabled={cart.length === 0}
-                                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-                            >
-                                Proceed to Payment
-                            </button>
+                            <div className="flex gap-3 flex-wrap">
+                                {/* Anonymous Checkout */}
+                                <button
+                                    onClick={() => setShowDialog(true)}
+                                    disabled={cart.length === 0}
+                                    className="grow py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                                >
+                                    Pay Without Account
+                                </button>
+
+                                {/* User Checkout */}
+                                <button
+                                    onClick={() => setShowDialog2(true)}
+                                    disabled={cart.length === 0}
+                                    className="grow py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                                >
+                                    Pay With My Account
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

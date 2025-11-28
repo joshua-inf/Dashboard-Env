@@ -87,16 +87,19 @@ export const getBillingAmount = async (business_id: string): Promise<MonthlyBill
 export const getOrCreateInvoicesByBusinessId = async (
     business_id: string
 ): Promise<Invoice[] | null> => {
-    // 1. Get all billing periods from orders
     const billingPeriods = await getBillingAmount(business_id);
     if (!billingPeriods) return null;
 
     const invoices: Invoice[] = [];
 
+    // Current month key: YYYY-MM
+    const now = new Date();
+    const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
     for (const billing of billingPeriods) {
         const { month, total_orders, charge } = billing;
 
-        // 2. Check if invoice exists
+        // Check if invoice exists
         const { data: existingInvoiceData, error: fetchError } = await supabase
             .from("invoices")
             .select("*")
@@ -105,15 +108,40 @@ export const getOrCreateInvoicesByBusinessId = async (
             .limit(1)
             .single();
 
-        if (fetchError && fetchError.code !== "PGRST116") { // PGRST116 = no rows found
-            console.error("Error checking existing invoice:", fetchError);
+        if (fetchError && fetchError.code !== "PGRST116") {
+            console.error("Error fetching invoice:", fetchError);
             return null;
         }
 
+        // If exists → push it
         if (existingInvoiceData) {
             invoices.push(existingInvoiceData as Invoice);
-        } else {
-            // 3. Create new invoice for missing period
+            continue;
+        }
+
+        // If NOT found and month == CURRENT → return dynamic only, DO NOT CREATE
+        if (month === currentMonthKey) {
+            invoices.push({
+                id: "dynamic-" + month,
+                business_id,
+                period_month: month,
+                period_start: "",      // No DB entry
+                period_end: "",
+                total_order_amount: total_orders,
+                billing_rate: 1.5,
+                amount_due: charge,
+                status: "unpaid",
+                payment_id: null,
+                generated_at: "",
+                paid_at: null,
+                created_at: "",
+                updated_at: ""
+            });
+            continue;
+        }
+
+        // If month < current month → CREATE invoice
+        if (month < currentMonthKey) {
             const start = new Date(`${month}-01T00:00:00Z`);
             const end = new Date(start);
             end.setMonth(end.getMonth() + 1);
@@ -142,7 +170,7 @@ export const getOrCreateInvoicesByBusinessId = async (
         }
     }
 
-    // 4. Sort by month descending (newest first)
+    // Sort newest → oldest
     invoices.sort((a, b) => (a.period_month < b.period_month ? 1 : -1));
 
     return invoices;

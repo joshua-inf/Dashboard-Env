@@ -38,11 +38,11 @@ export default function POSPage() {
     const [customerName, setCustomerName] = useState('');
     const [cashAmount, setCashAmount] = useState('');
     const [changeAmount, setChangeAmount] = useState(0);
+    const [payableUserData, setPayableUSerData] = useState<Partial<Customers> | null>(null)
     // const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
     const businessData = getOrgData()
     const userData = useSelector((state: RootState) => state.userDetails)
 
-    const [payableUserData, setPayableUSerData] = useState<Partial<Customers>>(userData)
 
     const categories = ['All', ...new Set(products?.map(p => p.category))];
 
@@ -86,17 +86,21 @@ export default function POSPage() {
 
     const processPayment = async () => {
         setLoading(true)
-        setPayableUSerData({...payableUserData, business_id: businessData.id})
+        setPayableUSerData({ ...payableUserData, business_id: businessData.id })
 
-        
+
         try {
-            let orederResponse = await makeOrderByMainUser(cart, payableUserData, businessData.id)
-            if (orederResponse) {
-                console.log("data stored successfully")
-                setPayStatus('success')
+            if (payableUserData) {
+                let orederResponse = await makeOrderByMainUser(cart, payableUserData, businessData.id)
+                if (orederResponse) {
+                    console.log("data stored successfully")
+                    setPayStatus('success')
+                } else {
+                    setPayStatus("failed")
+                    // console.log("faied to store data")
+                }
             } else {
                 setPayStatus("failed")
-                // console.log("faied to store data")
             }
             setLoading(false)
         } catch (error) {
