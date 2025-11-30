@@ -6,14 +6,14 @@ import React, { useEffect, useState } from 'react'
 import { PiDotsThreeOutlineFill } from 'react-icons/pi'
 import AddProductModal from './Dialog'
 
-export const ProductCard = ({ e,getProducts }: { e: ProductWithSales, getProducts : ()=> void}) => {
+export const ProductCard = ({ e, getProducts }: { e: ProductWithSales, getProducts: () => void }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null)
     const [openModal, setOpenModal] = useState(false)
 
     const getImages = () => {
-        getProductImages(e.id, e.imageName)
+        getProductImages(e?.id, e?.imageName)
             .then((res) => {
-                console.log("images collected",res)
+                console.log("images collected", res)
                 if (res && res.length > 0) {
                     setImageUrl(res)
                 }
@@ -64,12 +64,12 @@ export const ProductCard = ({ e,getProducts }: { e: ProductWithSales, getProduct
 
                 {/* Product Info */}
                 <div className="p-4">
-                    <div className="text-lg font-bold dark:text-gray-200">{e.name}</div>
+                    <div className="text-lg font-bold dark:text-gray-200">{e?.name}</div>
                     <div className="text-[#1C0F86] dark:text-blue-400 font-bold text-md">
-                        {'ZMK ' + e.price.toFixed(2)}
+                        {'ZMK ' + e?.price.toFixed(2)}
                     </div>
                     <div className="font-light text-sm dark:text-gray-400">
-                        {e.sales.length} {e.sales.length > 1 ? 'Units' : 'Unit'} Sold
+                        {e.sales} {e.sales > 1 ? 'Units' : 'Unit'} Sold
                     </div>
                 </div>
             </div>

@@ -6,7 +6,7 @@ import { isWithinLast7Days } from './TopProducts'
 
 export const SalesRevenueByRegion = ({ data }: { data: SalesAnalyticsData | null }) => {
     return (
-        <div className="grow p-4 rounded-md border border-[#C9C9C9] dark:border-gray-700 dark:bg-gray-800">
+        <div className="grow flex flex-col justify-between  p-4 rounded-md border border-[#C9C9C9] dark:border-gray-700 dark:bg-gray-800">
             {/* Pie Chart Section */}
             <div className='text-white'>
                 <PieChart data={data} />
@@ -18,8 +18,7 @@ export const SalesRevenueByRegion = ({ data }: { data: SalesAnalyticsData | null
                 <div className="flex justify-between items-end mt-2">
                     <div className="flex items-end gap-2">
                         <span className="text-2xl font-bold">
-                            K {data?.sales
-                                .reduce((prev, curr) => prev + curr.total_amount, 0)
+                            K {data?.revenueData?.reduce((prev, curr) => prev + curr.totalSales, 0)
                                 .toFixed(2)}
                         </span>
                         <span className="text-sm font-light">last 7 days</span>
@@ -27,6 +26,5 @@ export const SalesRevenueByRegion = ({ data }: { data: SalesAnalyticsData | null
                 </div>
             </div>
         </div>
-
     )
 }

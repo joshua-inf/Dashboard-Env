@@ -84,7 +84,8 @@ const NotificationDetailPage = () => {
         } finally {
             setLoading(false)
         }
-    }, [notificationId])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         getNotification()
@@ -195,7 +196,7 @@ const NotificationDetailPage = () => {
                         Notification not found
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        The notification you're looking for doesn't exist.
+                        The notification you&apos;re looking for doesn&apos;t exist.
                     </p>
                     <Link
                         href="/notifications"

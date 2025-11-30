@@ -86,6 +86,8 @@ const DropdownNotification = () => {
     } finally {
       setLoading(false);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [business?.id]);
 
   useEffect(() => {
@@ -199,7 +201,7 @@ const DropdownNotification = () => {
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 font-medium">No notifications</p>
                   <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                    We'll notify you when something arrives
+                    We&apos;ll notify you when something arrives
                   </p>
                 </div>
               ) : (

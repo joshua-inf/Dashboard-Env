@@ -2,13 +2,13 @@
 import { PlusIcon, ArchiveBoxIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from 'react'
 import AddProductModal from './components/Dialog';
-import { inventoryData } from "@/types/inventoryTypes";
+import { inventoryData, InventoryResponse, InventoryResponses } from "@/types/inventoryTypes";
 import { getInventory } from "@/services/api/apiinventory";
 import { getCookie, getOrgData } from "@/lib/createCookie";
 
 
 const Inventory = () => {
-    const [data, setData] = useState<inventoryData[]>([]);
+    const [data, setData] = useState<InventoryResponses[]>([]);
     const [filter, setFilter] = useState('')
     const [titleFilter, setTitleFilter] = useState('')
     const [loading, setLoading] = useState(false)
@@ -51,7 +51,7 @@ const Inventory = () => {
         getInventory(businessData?.id)
             .then((res: any) => {
                 setData(res.allInventory)
-                console.log(res.allInventory)
+                console.log("data", res.allInventory)
             })
             .catch((err) => {
                 console.log(err)
@@ -68,6 +68,8 @@ const Inventory = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+
     return (
         <div className=" space-y-6">
             {/* Header */}
@@ -89,21 +91,23 @@ const Inventory = () => {
                     <h2 className="text-sm text-gray-500">Low Stock</h2>
                     <p className="text-2xl font-bold text-yellow-500">
                         {data.map((e, i) => {
-                            const stockQty = Math.max(e.stock_table.reduce((pre, curr) => pre + curr.quantity, 0), 0);
-                            const orderQty = Math.max(e.orders.reduce((pre, curr) => pre + curr.quantity, 0), 0);
+                            const stockQty = Math.max(e.quantity, 0);
+                            const orderQty = e.sales;
                             const remaining = Math.max(stockQty - orderQty, 0);
 
                             return remaining;
                         }).filter((e) => e <= 100).length
                         }
                     </p>
+
                 </div>
+
                 <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow">
                     <h2 className="text-sm text-gray-500">Out of Stock</h2>
                     <p className="text-2xl font-bold text-red-500">
                         {data.map((e, i) => {
-                            const stockQty = Math.max(e.stock_table.reduce((pre, curr) => pre + curr.quantity, 0), 0);
-                            const orderQty = Math.max(e.orders.reduce((pre, curr) => pre + curr.quantity, 0), 0);
+                            const stockQty = Math.max(e.quantity, 0);
+                            const orderQty = e.sales;
                             const remaining = Math.max(stockQty - orderQty, 0);
 
                             return remaining;
@@ -170,13 +174,13 @@ const Inventory = () => {
                                                 <td className="p-3 ">{item.name}</td>
                                                 <td className="p-3">{item.category}</td>
                                                 <td className="p-3">{Math.max(
-                                                    item.stock_table.reduce((prev, curr) => prev + curr.quantity, 0) -
-                                                    item.orders.reduce((prev, curr) => prev + curr.quantity, 0),
+                                                    item.quantity -
+                                                    item.sales,
                                                     0
                                                 )}</td>
                                                 <td className="p-3">${item.price}</td>
                                                 <td className="p-3 whitespace-nowrap">
-                                                    <CheckStock stock={item.stock_table.reduce((prev, curr) => prev + curr.quantity, 0)} orders={item.orders.reduce((prev, curr) => prev + curr.quantity, 0)} />
+                                                    <CheckStock stock={item.quantity} orders={item.sales} />
                                                 </td>
                                                 {/* <td className="p-3">
                                     <button className="text-blue-600 hover:underline text-sm">Edit</button>

@@ -5,7 +5,9 @@ import { Customers } from "@/types/Customers";
 import { OrderData } from "@/types/Orders";
 import { ProductAi, ProductAIResponse } from "@/components/ProductsAndServices/components/AIUploadModal";
 import { BusinessType } from "@/types/businesses";
-
+import { ProductsAndServices } from "@/components/ProductsAndServices/ProductsAndServices";
+import { InventoryResponses } from "@/types/inventoryTypes";
+import { getOrdersByBusinessId } from "./apiOrder";
 
 
 // Define AmountDistEntry type
@@ -16,154 +18,84 @@ export type AmountDistEntry = {
 
 // Define the overall data structure
 export type SalesAnalyticsData = {
-    products: Product[];
-    revenueData: RevenueData[]
-    amountDist: AmountDistEntry[];
-    sales: OrderData[]
+    products: ProductWithSales[] | null;
+    revenueData: RevenueData[] | null;
+    ordersLastSevenDays: OrderData[] | null;
 };
 
 export type RevenueData = {
-    locations: string;
-    scrappedSales: number
+    location: string;
+    totalSales: number
 }
-
 
 export interface ImagePreview {
     name: string;
     url: string;
     file: File;
 }
-export type ProductWithSales = Product & { sales: OrderData[] };
+
+export type ProductWithSales = Product & { sales: number }
+
+export const getDataforsalseAnalytics = async (
+    business_id: any
+): Promise<SalesAnalyticsData | null> => {
+    try {
+        const products = await getProductsAndServices(business_id);
+        const orders = await getOrdersByBusinessId(business_id);
+
+        if (!orders) return null;
 
 
 
-export const getDataforsalseAnalytics = async (business_id: any): Promise<null | SalesAnalyticsData> => {
+
+        // Get today's date
+        const today = new Date();
+
+        // Date 7 days ago
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+
+        // Filter orders whose created_at is >= sevenDaysAgo
+        const recentOrders = orders?.filter((order) => {
+            return new Date(order.created_at) >= sevenDaysAgo;
+        }) ?? [];
+
+        // Map: { "Kitwe": totalSales }
+        const locationMap: Record<string, number> = {};
+
+        for (const order of recentOrders) {
+            const location = order.customers?.location ?? "Anonymous";
+            const amount = order.total_amount ?? 0;
+
+            if (!locationMap[location]) {
+                locationMap[location] = 0;
+            }
+
+            locationMap[location] += amount;
+        }
+
+        const result = Object.entries(locationMap).map(([location, totalSales]) => ({
+            location,
+            totalSales,
+
+        }));
+
+        return {
+            products,
+            revenueData: result,
+            ordersLastSevenDays: recentOrders
+        };
+
+    } catch (err) {
+        console.error("Error in getDataforsalseAnalytics:", err);
+        return null;
+    }
+};
+
+export const getProductsAndServices = (business_id: string | null | undefined): Promise<ProductWithSales[] | null> => {
     return new Promise(async (resolve, reject) => {
         const products: Product[] = []
-        const salesByBusiness: OrderData[] = []
-        const allcustomers: Customers[] = []
-        // getall customers from db
-        try {
-            const { data, error } = await supabase
-                .from('customers')
-                .select('*')
-
-            if (data) {
-                allcustomers.push(...data)
-            }
-            if (error) {
-                console.log(error)
-            }
-
-        } catch (err) {
-            console.log(err)
-        }
-
-        // getting products
-        try {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .eq('business_id', business_id)
-
-            console.log(data)
-            if (data) {
-                products.push(...data)
-            }
-            if (error) {
-                console.log(error)
-            }
-        } catch (err) {
-            console.log(err)
-            reject(null)
-        }
-
-
-        // getting orders per products
-        try {
-            const { data, error } = await supabase
-                .from('orders')
-                .select('*')
-                .eq('business_id', business_id)
-
-            if (data) {
-                salesByBusiness.push(...data)
-            }
-
-            if (error) {
-
-            }
-        } catch (err) {
-            console.log(err)
-        }
-
-
-
-        // since i now have both orders by business and all customers we  will filter them
-        let foundcustomer = []
-        for (let i = 0; i < salesByBusiness.length; i++) {
-
-            for (let j = 0; j < allcustomers.length; j++) {
-                if (String(salesByBusiness[i].customer_id) == String(allcustomers[j].id)) {
-                    foundcustomer.push(...Array(allcustomers[j]))
-                }
-            }
-        }
-
-        // console.log("found customers:", foundcustomer)
-        // Extract locations to a new array
-        const locations: string[] = foundcustomer.map(customer => customer.location);
-
-        let LocationAmount = []
-
-
-        for (let i = 0; i < locations.length; i++) {
-
-            // gets all customers and adds them to this based on location
-            let foundCustomers = []
-            for (let j = 0; j < foundcustomer.length; j++) {
-                if (foundcustomer[j].location == locations[i]) {
-                    foundCustomers.push(...Array(foundcustomer[j]))
-                }
-            }
-            // using the location we are getting all the sales
-            let getCities = Array.from(new Set(salesByBusiness.map(e => e.delivery_location)));
-            console.log("cisties: ", getCities)
-
-            let currentCity = getCities[i];
-
-            let TotalAmount = salesByBusiness.filter((e) => e.delivery_location == currentCity).reduce((prev, curr) => prev + curr.total_amount, 0)
-            console.log(TotalAmount)
-
-            LocationAmount.push({ scrappedSales: TotalAmount, locations: currentCity })
-
-            console.log("location data: ", LocationAmount)
-
-        }
-
-        let productstoTotalSales = []
-        // console.log("products: ", products)
-        // console.log("sales: ", salesByBusiness)
-        for (let i = 0; i < products.length; i++) {
-
-            let filteredSales = salesByBusiness.filter((e) => e.product_id === products[i].id).map((e) => e.total_amount)
-            console.log("filteredData ", filteredSales);
-
-            productstoTotalSales.push({ product: products[i], amountMade: filteredSales.length > 0 ? filteredSales.reduce((prev, curr) => prev + curr) : 0 })
-            // get all sales for the specific product
-        }
-
-        if (productstoTotalSales.length <= 0) {
-            reject(null)
-        }
-        resolve({ products: products, amountDist: productstoTotalSales, revenueData: LocationAmount, sales: salesByBusiness })
-    })
-}
-
-export const getProductsAndServices = (business_id: string | null | undefined): Promise<any | null> => {
-    return new Promise(async (resolve, reject) => {
-        const products: Product[] = []
-        const sales: Sale[] = []
+        const sales: OrderData[] = []
 
         const combinedData = []
 
@@ -207,13 +139,31 @@ export const getProductsAndServices = (business_id: string | null | undefined): 
 
         for (let i = 0; i < products.length; i++) {
             const product = products[i];
-            const collectedSales = sales.filter((e) => e.product_id == product.id)
-            combinedData.push({ ...product, sales: collectedSales })
+            let quantitySold = 0;
+
+            for (let j = 0; j < sales.length; j++) {
+                const saleProducts = sales[j].products;
+
+                if (saleProducts) {
+                    if (saleProducts.length <= 0) continue;
+                    for (let k = 0; k < saleProducts.length; k++) {
+                        const saleProduct = saleProducts[k];
+                        if (saleProduct.product_id == product.id) {
+                            quantitySold += saleProduct.quantity;
+                        }
+                    }
+                } else {
+                    continue;
+                }
+            }
+
+            combinedData.push({ ...product, sales: quantitySold })
         }
 
         resolve(combinedData)
     })
 }
+
 export const updateProductAndService = async (
     product: Partial<ProductInsert>,
     id: string,

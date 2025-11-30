@@ -21,7 +21,7 @@ export const ProductsAndServices = () => {
         try {
             const products = await getProductsAndServices(businessData.id);
             setProductData(products);
-            console.log(products)
+            // console.log(products)
         } catch (error) {
             setProductData([]);
             console.error(error);
@@ -81,10 +81,12 @@ export const ProductsAndServices = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                            {productData?.map((e, key) => (
-                                <ProductCard getProducts={() => getProducts()} e={e} key={key} />
-                            ))}
+                        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+                            {productData
+                                ?.sort((a, b) => b.sales - a.sales)   // ascending order
+                                .map((e, key) => (
+                                    <ProductCard getProducts={() => getProducts()} e={e} key={key} />
+                                ))}
                         </div>
                     )}
                 </div>

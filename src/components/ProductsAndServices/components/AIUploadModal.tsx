@@ -1,6 +1,7 @@
 "use client";
 import { getOrgData } from '@/lib/createCookie';
 import { createMulitipleProductsandservices } from '@/services/api/products';
+import Image from 'next/image';
 import React, { useState, useCallback } from 'react';
 
 export type Product = {
@@ -251,7 +252,9 @@ const AIUploadModal: React.FC<AIUploadModalProps> = ({ isOpen, onClose, getProdu
                                             <div className="grid grid-cols-3 gap-4">
                                                 {uploads.map((item) => (
                                                     <div key={item.id} className="relative group">
-                                                        <img
+                                                        <Image
+                                                            width={100}
+                                                            height={100}
                                                             src={item.previewUrl}
                                                             alt="preview"
                                                             className="w-full h-32 rounded-lg object-cover border border-gray-300 dark:border-gray-600"
@@ -339,10 +342,12 @@ const AIUploadModal: React.FC<AIUploadModalProps> = ({ isOpen, onClose, getProdu
                                         className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white dark:bg-gray-800"
                                     >
                                         <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 flex-shrink-0 relative">
-                                            <img
+                                            <Image
                                                 src={product.imageUrl || "/placeholder.png"}
                                                 alt={product.name || "Product"}
                                                 className="w-full h-full object-cover"
+                                                width={100}
+                                                height={100}
                                             />
                                         </div>
 

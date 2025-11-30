@@ -2,15 +2,15 @@ import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getProductsAndServices } from "@/services/api/products"
+import { getProductsAndServices, ProductWithSales } from "@/services/api/products"
 import { getOrgData } from "@/lib/createCookie"
 import { addInventory } from "@/services/api/apiinventory"
 import { Product } from "@/types/product"
-import { inventoryData } from "@/types/inventoryTypes"
+import { inventoryData, InventoryResponses } from "@/types/inventoryTypes"
 
-export default function AddProductModal({ getInventoryData, data }: { getInventoryData: () => void, data: inventoryData[] }) {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [products, setProducts] = useState<Product[]>([])
+export default function AddProductModal({ getInventoryData, data }: { getInventoryData: () => void, data: InventoryResponses[] }) {
+    const [selectedProduct, setSelectedProduct] = useState<ProductWithSales | null>(null);
+    const [products, setProducts] = useState<ProductWithSales[] | null>([])
     const [uploadDAtaLoading, setUploadDataLoading] = useState(false)
     const [open, setOpen] = useState(false)
     const businessData = getOrgData() // Assuming this function returns the business data   
@@ -74,8 +74,8 @@ export default function AddProductModal({ getInventoryData, data }: { getInvento
     useEffect(() => {
         // Reset form when modal is closed)
         getAllProducts()
-        
-    /* eslint-disable react-hooks/exhaustive-deps */
+
+        /* eslint-disable react-hooks/exhaustive-deps */
     }, [])
 
     return (
@@ -107,8 +107,8 @@ export default function AddProductModal({ getInventoryData, data }: { getInvento
                                     value={form.name}
                                     onChange={(e) => {
                                         handleChange(e);
-                                        const selected = products.find(product => product.name === e.target.value);
-                                        setSelectedProduct(selected ?? {} as Product);
+                                        const selected = products?.find(product => product.name === e.target.value);
+                                        setSelectedProduct(selected ?? {} as ProductWithSales);
                                     }}
                                     className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
                                     required
@@ -116,7 +116,7 @@ export default function AddProductModal({ getInventoryData, data }: { getInvento
                                     <option value="" disabled>
                                         Select a product
                                     </option>
-                                    {products.map((product) => (
+                                    {products?.map((product) => (
                                         <option key={product.id} value={product.name}>
                                             {product.name}
                                         </option>

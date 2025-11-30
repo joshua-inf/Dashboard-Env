@@ -21,7 +21,7 @@ interface CartInterface {
     customerEmail: string
     customerName: string
     changeAmount: number
-    processPayment: () => void
+    processPayment: (userData: Partial<Customers> | null) => void
 }
 
 export const CartPaymentSection = ({ cart, setPayableUSerData, setCart, customerName, customerEmail, setCustomerName, setCustomerEmail, updateQuantity, changeAmount, calculateChange, removeFromCart, paymentStep, selectedPayment, setPaymentStep, cashAmount, processPayment }: CartInterface) => {
@@ -33,10 +33,10 @@ export const CartPaymentSection = ({ cart, setPayableUSerData, setCart, customer
 
 
     const handleConfirm = (userData: Partial<Customers> | null) => {
-        setPayableUSerData(userData)
-        console.log("Processing Payment...")
-        processPayment()
-        setShowDialog(false)
+        if (userData) {
+            processPayment(userData)
+            setShowDialog(false)
+        }
     }
 
     return (

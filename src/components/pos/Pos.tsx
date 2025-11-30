@@ -15,6 +15,8 @@ import { LoadingDialog } from './components/LoadingDialog';
 import { SuccessDialog } from './components/SuccessDialogProps ';
 import { FailedDialog } from './components/FailedDialog ';
 import { Customers } from '@/types/Customers';
+import { getInventory } from '@/services/api/apiinventory';
+import { InventoryResponses } from '@/types/inventoryTypes';
 
 
 
@@ -27,6 +29,7 @@ export interface CartItem {
 
 export default function POSPage() {
     const [products, setProducts] = useState<Product[]>();
+    const [productsInv, setProductsInv] = useState<InventoryResponses[] | null>(null);
     const [loading, setLoading] = useState(false)
     const [cart, setCart] = useState<CartItem[]>([]);
     const [paystatus, setPayStatus] = useState('')
@@ -84,32 +87,36 @@ export default function POSPage() {
         setCart(prev => prev.filter(item => item.product.id !== productId));
     };
 
-    const processPayment = async () => {
-        setLoading(true)
-        setPayableUSerData({ ...payableUserData, business_id: businessData.id })
+    const processPayment = async (userData: Partial<Customers> | null) => {
+        console.log("user data: ", userData)
 
-
-        try {
-            if (payableUserData) {
-                let orederResponse = await makeOrderByMainUser(cart, payableUserData, businessData.id)
-                if (orederResponse) {
-                    console.log("data stored successfully")
-                    setPayStatus('success')
+        if (userData) {
+            setLoading(true)
+            // setPayableUSerData({ ...payableUserData, business_id: businessData.id, ...userData })
+            try {
+                if (userData) {
+                    let orederResponse = await makeOrderByMainUser(cart, userData, businessData.id)
+                    if (orederResponse) {
+                        setPayStatus('success')
+                    } else {
+                        setPayStatus("failed")
+                    }
                 } else {
                     setPayStatus("failed")
-                    // console.log("faied to store data")
                 }
-            } else {
+                setLoading(false)
+                getProducts()
+            } catch (error) {
+                console.log(error)
                 setPayStatus("failed")
+                setLoading(false)
+            } finally {
+                setCart([])
             }
+        } else {
+            console.log("user not Found")
+            setPayStatus("failed")
             setLoading(false)
-        } catch (error) {
-            console.log(error)
-            // setPayStatus("failed")
-            setLoading(false)
-        } finally {
-            setPayableUSerData({})
-            setCart([])
         }
 
     };
@@ -125,6 +132,13 @@ export default function POSPage() {
             .then((res) => {
                 if (res) {
                     setProducts(res)
+                }
+            })
+
+        getInventory(businessData?.id)
+            .then((res) => {
+                if (res) {
+                    setProductsInv(res.allInventory)
                 }
             })
     }
@@ -189,7 +203,7 @@ export default function POSPage() {
                                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Products</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {filteredProducts?.map((product, key) => (
-                                        <ProductCard key={key} product={product} addToCart={addToCart} />
+                                        <ProductCard cart={cart} key={key} productsInv={productsInv?.filter(inv => inv.id == product.id)[0]} product={product} addToCart={addToCart} />
                                     ))}
                                 </div>
                             </div>

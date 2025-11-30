@@ -1,4 +1,4 @@
-import { SalesAnalyticsData } from '@/services/api/products';
+import { RevenueData, SalesAnalyticsData } from '@/services/api/products';
 import { ApexOptions } from 'apexcharts';
 import React from 'react'
 import ReactApexChart from 'react-apexcharts';
@@ -10,24 +10,36 @@ const BarChart = ({ data }: { data: undefined | OrderData[] }) => {
 
     const salesData = data ?? [];
 
-    // Calculate sales by day (ensure all days are included)
-    const salesByDayMap = salesData.reduce<Record<string, number>>((acc, sale) => {
-        const day = format(parseISO(sale.created_at), 'EEEE');
-        acc[day] = (acc[day] ?? 0) + sale.total_amount;
-        return acc;
-    }, {});
-
     // Define the full week
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const groupSalesByDay = (orders: OrderData[]) => {
+        // Map: { "2025-11-25": totalAmount }
+        const dayMap: Record<string, number> = {};
+
+        for (const order of orders) {
+            const date = new Date(order.created_at);
+            const dayKey = date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+            if (!dayMap[dayKey]) {
+                dayMap[dayKey] = 0;
+            }
+            dayMap[dayKey] += order.total_amount ?? 0;
+        }
+
+        return dayMap;
+    };
+
+
+    const dayMap = groupSalesByDay(salesData);
+    // Chart labels (sorted by day)
+    const labels = Object.keys(dayMap).sort();
 
     // Convert to array with default 0 for missing days
-    const salesByDayArray = daysOfWeek.map(day => salesByDayMap[day] ?? 0);
-
+    const totalAmounts = labels.map(day => dayMap[day]);
     // Now use this data in the chart
     const series = [
         {
             name: 'Total Sales',
-            data: salesByDayArray,
+            data: totalAmounts,
         },
     ];
 
@@ -51,7 +63,7 @@ const BarChart = ({ data }: { data: undefined | OrderData[] }) => {
             },
         },
         xaxis: {
-            categories: daysOfWeek,  // All days
+            categories: labels,  // All days
             labels: {
                 style: {
                     colors: '#616262',

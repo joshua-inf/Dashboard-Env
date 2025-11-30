@@ -1,3 +1,5 @@
+import { Customers } from "./Customers";
+
 export type OrderData = {
   id: string;
   order_id: number;
@@ -10,18 +12,16 @@ export type OrderData = {
   partialAmountTotal: number;
   sammarized_notes: string;
   transaction_id: string;
-  orderToken:string;
+  orderToken: string;
   delivery_location: string
   order_payment_status: string;
-  customers: {
-    name: string;
-    email: string;
-    phone: string
-  };
+  customers: Customers;
   products: {
+    name: string;
     quantity: number,
     product_id: string,
     specialInstructions: string,
-    description: string
+    description: string,
+    price: number
   }[]
 };

@@ -1,6 +1,6 @@
 'use client'
 import { Table } from '@/app/sales-analytics/total_sales_over_time/components/Table'
-import { ArrowLeftIcon, FilterIcon } from 'lucide-react'
+import { ArrowLeftIcon, CalendarIcon, CheckIcon, ChevronDownIcon, FilterIcon, ShoppingCartIcon, TableIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import {
@@ -26,6 +26,7 @@ import { OrderData } from '@/types/Orders'
 import { Customers } from '@/types/Customers'
 import { TransactionTableType } from '@/types/TransactionsTablePopup'
 import { getOrdersByBusinessId } from '@/services/api/apiOrder'
+import { CurrencyDollarIcon } from '@heroicons/react/24/outline'
 
 // Define available months
 const months = [
@@ -33,12 +34,6 @@ const months = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-const getMonth = (dateString: string) => {
-    const date = new Date(dateString);
-    const month = date.getMonth(); // getMonth() returns 0-11, so add 1 for 1-12
-
-    return month
-}
 
 interface TransactionDetails {
     customers?: Partial<Customers>;
@@ -55,7 +50,9 @@ const TotalSalesOverTime = () => {
     const router = useRouter();
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState("Total Sales Value");
-    const [selectedM, setSelectedMonth] = useState<number>(new Date().getMonth())
+    const [selectedM, setSelectedMonth] = useState<number>(
+        new Date().getFullYear() * 100 + (new Date().getMonth() + 1)
+    );
     const [transactionDetails, setTransactionDetails] = useState<any>(null);
     const businessData: BusinessType | null = getOrgData()
     const [data, setData] = useState<null | OrderData[] | undefined>(null)
@@ -70,9 +67,9 @@ const TotalSalesOverTime = () => {
             customers: userData, // assign the full Customers object
             created_at: order?.created_at ?? "",
             product_id: order?.product_id ?? "",
-            phone_number: userData?.customers.phone ?? "",
+            phone_number: userData?.customers?.phone ?? "",
             receiptNo: order.id ?? "",
-            email: userData?.customers.email ?? "",
+            email: userData?.customers?.email ?? "",
             amount: order.total_amount ?? "",
             address: userData?.delivery_location ?? "",
         }
@@ -84,7 +81,7 @@ const TotalSalesOverTime = () => {
         setLoading(true)
         getOrdersByBusinessId(businessData?.id ?? null)
             .then((res: any) => {
-                // console.log(res)
+                console.log(res)
                 setData(res)
             })
             .catch((errr) => {
@@ -99,98 +96,132 @@ const TotalSalesOverTime = () => {
         getProductsPageData()
     }, [getProductsPageData])
 
-
-    const growthRate = () => {
-        const previouse = data?.filter((e) => getMonth(e.created_at) == selectedM - 1).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
-        const current = data?.filter((e) => getMonth(e.created_at) == selectedM).reduce((prev, cur) => prev + cur.total_amount, 0) ?? 0;
-        if (previouse === 0) return 0;
-        return ((current - previouse) / previouse) * 100;
+    const getYearMonth = (dateString: string): number => {
+        const d = new Date(dateString);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1; // 1-12
+        return y * 100 + m; // YYYYMM
     }
 
+    const growthRate = () => {
+        const previous = data
+            ?.filter(e => getYearMonth(e.created_at) === selectedM - 1)
+            .reduce((prev, cur) => prev + (cur.total_amount ?? 0), 0) ?? 0;
+
+        const current = data
+            ?.filter(e => getYearMonth(e.created_at) === selectedM)
+            .reduce((prev, cur) => prev + (cur.total_amount ?? 0), 0) ?? 0;
+
+        if (previous === 0) return 0;
+        return ((current - previous) / previous) * 100;
+    };
 
     return (
         <div className='pt-20 flex flex-col gap-10 p-3'>
             {/* Header */}
-            <div className='w-full'>
-                <div className='flex gap-4 items-center'>
-                    <button className='dark:text-gray-200' onClick={() => router.back()}>
-                        <ArrowLeftIcon className='size-4' />
+            <div className="w-full space-y-4">
+                {/* Main Header */}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white rounded-lg transition-colors"
+                    >
+                        <ArrowLeftIcon className="size-5" />
                     </button>
-                    <div className='text-[#8B909AA8] dark:text-gray-400 text-xl flex gap-5 items-center font-bold'>
-                        Total Sales Over Time
-                        <span className='text-[#1A0670] dark:text-blue-400 text-2xl'> ZMW {data?.reduce((prev, curr) => prev + curr.total_amount, 0)} </span>
+
+                    <div className="flex items-center gap-4">
+                        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                            Total Sales Over Time
+                        </h1>
+                        <div className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <span className="text-blue-600 dark:text-blue-400 font-bold">
+                                ZMW {data?.reduce((prev, curr) => prev + curr.total_amount, 0).toLocaleString()}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="w-full max-w-xs">
-                <label htmlFor="month-select" className="block mb-1 text-sm text-gray-700 dark:text-gray-300">
-                    Select Month
-                </label>
-                <select
-                    id="month-select"
-                    value={selectedM}
-                    onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                    className="w-full p-2 text-lg rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1A0670]"
-                >
-                    {months.map((month, index) => (
-                        <option key={index} value={index}>
-                            {month}
-                        </option>
-                    ))}
-                </select>
-            </div>
 
-            {/* Filter Dropdown */}
-            <div className='w-full flex justify-end pe-5'>
-                <DropdownMenu>
-                    <DropdownMenuTrigger className='flex text-lg items-center bg-white text-gray-800 dark:text-gray-200 dark:bg-boxdark'>
-                        <FilterIcon className='size-4' />
-                        {selectedFilter}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white dark:bg-boxdark">
-                        <DropdownMenuSeparator />
-                        {["Total Sales Value", "Total Number of Transactions", "Date", "Customer Name"].map(filter => (
-                            <DropdownMenuItem
-                                key={filter}
-                                onClick={() => setSelectedFilter(filter)}
-                                className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
-                            >
-                                By: {filter}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+                {/* Controls */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                    {/* Month Selector */}
+                    <div className="w-full sm:w-48">
+                        <select
+                            value={selectedM}
+                            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        >
+                            {months.map((month, index) => {
+                                const yearMonth = new Date().getFullYear() * 100 + (index + 1);
+                                return (
+                                    <option key={index} value={yearMonth}>
+                                        {month} {new Date().getFullYear()}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
 
-            {/* Stats Section */}
-            <div className='flex w-full'>
-                <div className='grow'>
-                    <div className='flex flex-wrap justify-between'>
-                        {[
-                            {
-                                value: 'ZMW ' + (data ?? [])
-                                    .filter(e => getMonth(e.created_at) == selectedM)
-                                    .reduce((sum, e) => sum + (e.total_amount ?? 0), 0), label: 'Current Month Revenue'
-                            },
-                            { value: data?.filter((e) => getMonth(e?.created_at) == selectedM).length, label: 'Number of Sales' },
-                            { value: growthRate().toFixed(2) + '%', label: 'Growth from Previous Month' }
-                        ].map(stat => (
-                            <div key={stat.label} className='grow text-center'>
-                                <div className='text-2xl text-[#1A0670] dark:text-blue-400 font-bold'>{stat.value}</div>
-                                <div className='font-light dark:text-gray-300'>{stat.label}</div>
+                    {/* Filter Dropdown */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="flex dark:text-white items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg">
+                            <FilterIcon className="size-4" />
+                            {selectedFilter}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="bg-white dark:text-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                            {["Total Sales Value", "Total Number of Transactions", "Date", "Customer Name"].map((filter) => (
+                                <DropdownMenuItem
+                                    key={filter}
+                                    onClick={() => setSelectedFilter(filter)}
+                                    className="px-3 py-2 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                                >
+                                    {filter}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[
+                        {
+                            value: 'ZMW ' + (data ?? [])
+                                .filter(e => getYearMonth(e.created_at) === selectedM)
+                                .reduce((sum, e) => sum + (e.total_amount ?? 0), 0)
+                                .toLocaleString(),
+                            label: 'Current Month'
+                        },
+                        {
+                            value: data
+                                ?.filter(e => getYearMonth(e.created_at) === selectedM)
+                                .length,
+                            label: 'Number of Sales'
+                        },
+                        {
+                            value: growthRate().toFixed(1) + '%',
+                            label: 'Growth Rate'
+                        }
+                    ].map((stat) => (
+                        <div key={stat.label} className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div className="text-lg font-bold text-gray-900 dark:text-white">
+                                {stat.value}
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Table with transaction click */}
-                    <Table
-                        open={openDialog}
-                        setDialogOpen={setOpenDialog}
-                        data={data?.filter((e) => getMonth(e.created_at) == selectedM)}
-                        onTransactionClick={handleTransactionClick}
-                    />
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                                {stat.label}
+                            </div>
+                        </div>
+                    ))}
                 </div>
+
+                {/* Table */}
+                <Table
+                    open={openDialog}
+                    setDialogOpen={setOpenDialog}
+                    data={data?.filter(e => getYearMonth(e.created_at) == selectedM)}
+                    onTransactionClick={handleTransactionClick}
+                />
             </div>
+
 
             {/* Dynamic AlertDialog for Transaction Details */}
             <AlertDialog open={openDialog}>
@@ -269,17 +300,9 @@ const TotalSalesOverTime = () => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-
         </div>
     );
 }
 
-// Helper component for detail items
-const DetailItem = ({ label, value }: { label: string; value: any }) => (
-    <div>
-        <div className='text-sm text-[#8B909A] dark:text-gray-400'>{label}</div>
-        <div className='text-lg font-bold dark:text-gray-200'>{value}</div>
-    </div>
-);
 
 export default TotalSalesOverTime;

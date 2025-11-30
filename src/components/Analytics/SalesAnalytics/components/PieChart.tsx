@@ -4,14 +4,14 @@ import { ApexOptions } from 'apexcharts'
 import { SalesAnalyticsData } from '@/services/api/products';
 
 const PieChart = ({ data }: { data: null | SalesAnalyticsData }) => {
-  const series = data?.revenueData.map((e) => e.scrappedSales) ?? [] ;  // Values for the pie slices
+  const series = data?.revenueData?.map((e) => e.totalSales) ?? [];  // Values for the pie slices
   const options: ApexOptions = {
     chart: {
-      type: 'donut' as const,  // The type of chart we want (pie chart in this case)
+      type: 'pie' as const,  // The type of chart we want (pie chart in this case)
       background: 'transparent'
     },
-    labels: data?.revenueData.map((e) => e.locations) ?? [],
-  
+    labels: data?.revenueData?.map((e) => e.location) ?? [],
+
     colors: ['#1A0670', '#877DFF', '#AEA7FF', '#D0CDFD'],  // Labels for each slice
     dataLabels: {
       enabled: false, // Hides the numbers inside the chart
@@ -38,8 +38,8 @@ const PieChart = ({ data }: { data: null | SalesAnalyticsData }) => {
       <ReactApexChart
         options={options}
         series={series}
-        type="donut"
-        height={200}
+        type="pie"
+        height={400}
         width="100%"
       />
     </>

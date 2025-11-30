@@ -4,17 +4,17 @@ import { Product } from "@/types/product"
 export async function createProduct(newProduct: Product): Promise<Product | null> {
   try {
     const { data, error } = await supabase
-        .from('products')
-        .insert([
-          {
-            user_id: newProduct.user_id,
-            price: newProduct.price,
-            name: newProduct.name,
-            description: newProduct.description,
-            image: newProduct.image,
-          },
-        ])
-        .single();
+      .from('products')
+      .insert([
+        {
+          user_id: newProduct.user_id,
+          price: newProduct.price,
+          name: newProduct.name,
+          description: newProduct.description,
+          image: newProduct.image,
+        },
+      ])
+      .single();
 
     if (error) {
       console.error("Error creating product:", error.message);
@@ -29,19 +29,19 @@ export async function createProduct(newProduct: Product): Promise<Product | null
   }
 }
 
-export async function getAllProducts(businessId?:string): Promise<Product[] | null> {
+export async function getAllProducts(businessId?: string): Promise<Product[] | null> {
   try {
     const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq("business_id", businessId)
+      .from('products')
+      .select('*')
+      .eq("business_id", businessId)
 
     if (error) {
       console.error("Error fetching products:", error.message);
       return null;
     }
 
-    console.log("Products fetched successfully:", data);
+    // console.log("Products fetched successfully:", data);
     return data;
   } catch (err) {
     console.error("Unexpected error fetching products:", err);
@@ -52,10 +52,10 @@ export async function getAllProducts(businessId?:string): Promise<Product[] | nu
 export async function getProductById(productId: string): Promise<Product | null> {
   try {
     const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', productId)
-        .single();
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single();
 
     if (error) {
       console.error("Error fetching product:", error.message);
@@ -73,16 +73,16 @@ export async function getProductById(productId: string): Promise<Product | null>
 export async function updateProduct(updatedProduct: Product): Promise<Product | null> {
   try {
     const { data, error } = await supabase
-        .from('products')
-        .update({
-          user_id: updatedProduct.user_id,
-          price: updatedProduct.price,
-          name: updatedProduct.name,
-          description: updatedProduct.description,
-          image: updatedProduct.image,
-        })
-        .eq('product_id', updatedProduct.product_id)
-        .single();
+      .from('products')
+      .update({
+        user_id: updatedProduct.user_id,
+        price: updatedProduct.price,
+        name: updatedProduct.name,
+        description: updatedProduct.description,
+        image: updatedProduct.image,
+      })
+      .eq('product_id', updatedProduct.product_id)
+      .single();
 
     if (error) {
       console.error("Error updating product:", error.message);
@@ -100,9 +100,9 @@ export async function updateProduct(updatedProduct: Product): Promise<Product | 
 export async function deleteProduct(productId: number): Promise<boolean> {
   try {
     const { data, error } = await supabase
-        .from('products')
-        .delete()
-        .eq('product_id', productId);
+      .from('products')
+      .delete()
+      .eq('product_id', productId);
 
     if (error) {
       console.error("Error deleting product:", error.message);

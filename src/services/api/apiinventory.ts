@@ -1,73 +1,57 @@
-import { inventoryData, InventoryResponse } from "@/types/inventoryTypes"
+import { inventoryData, InventoryResponse, InventoryResponses, stock_table } from "@/types/inventoryTypes"
 import { supabase } from "../SupabaseConfig"
-import { get } from "http";
+import { getProductsAndServices } from "./products"
 
-export const getInventory = async (businessid: string | undefined | null) => {
-    let allproducts: any[] = []
-    let allInventory: any[] = []
-
-
+export const getInventory = async (businessid: string | undefined | null): Promise<{ allInventory: InventoryResponses[] }> => {
     return new Promise(async (resolve, reject) => {
-
-        try{
-            const {data, error} = await supabase
-            .from('products')
-            .select(
-                `
-                name,
-                category,
-                price,
-                orders(*),
-                stock_table(*)
-                `
-            )
-            .eq('business_id', businessid)
-
-            if(data){
-                // console.log('stock data, :', data)
-                allInventory = data;
-            }
-
-            if(error)[
-                console.log(error)
-            ]
-
-        } catch {
-             reject("Error fetching inventory")
-        }
-
-       
-
-        // now to fillter out the data needed
+        let allProductsWithSales = await getProductsAndServices(businessid)
         let inventoryWithProducts: any[] = []
 
-        for(let i = 0; i < allproducts.length; i++){
-            const inventoryItem = allInventory[i];
+        if (allProductsWithSales) {
+            // now to fillter out the data needed
+            let allInventory = await allInventoryData(businessid ?? "")
 
+            for (let i = 0; i < allProductsWithSales.length; i++) {
+                const inventoryItem = allProductsWithSales[i];
+                const productStock = allInventory?.filter((product) => product.id === inventoryItem.id);
 
-            const productDetails = allInventory.filter((product) => product.id === inventoryItem.product_id);
+                if (productStock) {
+                    if (productStock.length > 0) {
+                        let totalQuantity = productStock[0].stock_table.reduce((acc, curr) => acc + curr.quantity, 0);
+                        inventoryWithProducts.push({
+                            ...inventoryItem,
+                            quantity: totalQuantity
+                        })
+                    }
+                } else {
+                    continue;
+                }
 
-            let totalQuantity = productDetails.reduce((acc, curr) => acc + curr.quantity, 0);
-
-            inventoryWithProducts.push({
-                ...inventoryItem,
-                quantity: totalQuantity
-            })
+            }
         }
-
-
-
-
-        
 
 
         resolve({
-            allInventory: allInventory
+            allInventory: inventoryWithProducts
         })
+    })
+}
+
+export const allInventoryData = async (businesId: string): Promise<{ id: any; stock_table: any[]; }[] | null> => {
+    try {
+        const { data, error } = await supabase
+            .from('products')
+            .select('id, stock_table(*)')
+            .eq('business_id', businesId)
+
+        if (data) {
+            return data
+        }
+    } catch (error) {
+        console.log(error)
     }
 
-
-    )
+    return null
 }
 
 export const addInventory = async (inventory: InventoryResponse) => {

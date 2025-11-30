@@ -6,21 +6,19 @@ import { createOrder } from "../api/apiOrder";
 
 
 
-export const makeOrderByMainUser = async (Payload: CartItem[], user?: Partial<UsersType>, business_id?:string) => {
+export const makeOrderByMainUser = async (Payload: CartItem[], user?: Partial<UsersType>, business_id?: string) => {
+    console.log("payable uiser: ", user)
     let userData = await getCustomersById(user?.id)
-    let userID = userData.id
+    let userID = userData?.id
 
     if (!userData) {
         //function to create the said user
-        console.log("user is being saved as a customer....")
         let response = await createCustomer(user)
 
         if (response) {
             userID = response.id
-            console.log("user has been created successfully")
         }
     }
-
 
     let totalamount = 0
     let products = []
@@ -31,25 +29,26 @@ export const makeOrderByMainUser = async (Payload: CartItem[], user?: Partial<Us
         totalamount += Payload[i].subtotal
     }
 
-    console.log("data being sent to create order:")
-    console.log(user)
-    
-    let newOrder = {
-        business_id: business_id,
-        customer_id: userID,
-        order_payment_status: "completed",
-        total_amount: totalamount,
-        delivery_location: "onsight",
-        order_status: "completed",
-        products: products,
-        partialAmountTotal: 0
-    }
-
-    let orderCreateResponse = await createOrder(newOrder)
-
-    if (orderCreateResponse) {
-        return orderCreateResponse
+    if (userID) {
+        let newOrder = {
+            business_id: business_id,
+            customer_id: userID,
+            order_payment_status: "completed",
+            total_amount: totalamount,
+            delivery_location: "onsight",
+            order_status: "completed",
+            products: products,
+            partialAmountTotal: 0
+        }
+        let orderCreateResponse = await createOrder(newOrder)
+        if (orderCreateResponse) {
+            return orderCreateResponse
+        } else {
+            console.log("failed to save order")
+            return false
+        }
     } else {
+        console.log("user Id not found")
         return false
     }
 }
