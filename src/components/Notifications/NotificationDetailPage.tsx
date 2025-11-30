@@ -15,7 +15,6 @@ import {
     DocumentTextIcon
 } from "@heroicons/react/24/outline";
 import { NotificationDB } from "@/types/Notification";
-import { getOrgData } from "@/lib/createCookie";
 import { NotificationService } from "@/services/apiNotification";
 
 

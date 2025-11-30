@@ -169,7 +169,7 @@ export const TableRow: React.FC<TableRowProps> = ({ order, setOrderData }) => {
 
             // Refresh orders data
             const updatedOrders = await getOrdersByBusinessId(businessData?.id);
-            setOrderData(updatedOrders);
+            setOrderData(updatedOrders || []);
         } catch (error) {
             console.error("Error marking order as settled:", error);
         } finally {
@@ -184,7 +184,7 @@ export const TableRow: React.FC<TableRowProps> = ({ order, setOrderData }) => {
 
             // Refresh orders data
             const updatedOrders = await getOrdersByBusinessId(businessData?.id);
-            setOrderData(updatedOrders);
+            setOrderData(updatedOrders || []);
         } catch (error) {
             console.error("Error updating payment status:", error);
         } finally {
