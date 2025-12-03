@@ -4,7 +4,6 @@ import { LoginAuth, SignUpAuth } from '@/services/auth/Auth';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { InxourceLogo } from '../svgs/inxourceLogo';
 import { Eye, EyeOff, Loader2, CheckCircle2, AlertCircle, Shield, Zap, Users, BarChart3 } from 'lucide-react';
 import LightDarkLogo from '../Logo';
 import { setUserDetails } from '@/store/features/userDetailsSlice';
@@ -45,21 +44,37 @@ const Signup = () => {
       const result = await authFunction(data);
       console.log(result)
 
-      if (result.userdata != null) {
-        createCookie(result.Token);
-        storeData(result.userdata);
-        dispatch(setUserDetails(result.userdata))
-        setSuccess(true);
 
-        // Success animation delay before navigation
-        setTimeout(() => {
-          router.push('/');
-        }, 1500);
+      if (isLogin) {
+        if (result.userdata != null) {
+          createCookie(result.Token);
+          storeData(result.userdata);
+          dispatch(setUserDetails(result.userdata))
+          setSuccess(true);
+
+          // Success animation delay before navigation
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
+        } else {
+          setError(result.message);
+        }
       } else {
-        setError(result.message);
+        if (result.data != null) {
+          createCookie(result.Token);
+          storeData(result.data);
+          dispatch(setUserDetails(result.data))
+          setSuccess(true);
+
+          // Success animation delay before navigation
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
+        }
+        else {
+          setError(result.message);
+        }
       }
-
-
     } catch (err: any) {
       console.log(err)
       // setError(err.response?.data?.message || 'Something went wrong. Please try again.');
