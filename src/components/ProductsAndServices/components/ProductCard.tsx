@@ -5,10 +5,43 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { PiDotsThreeOutlineFill } from 'react-icons/pi'
 import AddProductModal from './Dialog'
+import { PromotionService } from '@/services/apiPromotions'
 
 export const ProductCard = ({ e, getProducts }: { e: ProductWithSales, getProducts: () => void }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null)
     const [openModal, setOpenModal] = useState(false)
+    const promoService = new PromotionService();
+    const [promoInfo, setPromoInfo] = useState<{
+        hasPromotion: boolean,
+        discount: number,
+        percentage: number,
+        finalPrice: number
+    } | null>(null)
+
+    const getProductPromotion = async (productId: string, price: number) => {
+        const promo = await promoService.getActivePromotionForProduct(productId);
+
+        if (!promo) {
+            return {
+                hasPromotion: false,
+                discount: 0,
+                percentage: 0,
+                finalPrice: price,
+            };
+        }
+
+        const percentage = promo.discount;
+        const discount = (price * percentage) / 100;
+        const finalPrice = price - discount;
+
+        return {
+            hasPromotion: true,
+            discount,
+            percentage,
+            finalPrice,
+            promo,
+        };
+    }
 
     const getImages = () => {
         getProductImages(e?.id, e?.imageName)
@@ -22,6 +55,11 @@ export const ProductCard = ({ e, getProducts }: { e: ProductWithSales, getProduc
     }
     useEffect(() => {
         getImages()
+
+        getProductPromotion(e.id, e.price)
+            .then((res) => {
+                setPromoInfo(res)
+            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -62,15 +100,33 @@ export const ProductCard = ({ e, getProducts }: { e: ProductWithSales, getProduc
                     )}
                 </div>
 
-                {/* Product Info */}
-                <div className="p-4">
-                    <div className="text-lg font-bold dark:text-gray-200">{e?.name}</div>
-                    <div className="text-[#1C0F86] dark:text-blue-400 font-bold text-md">
-                        {'ZMK ' + e?.price.toFixed(2)}
-                    </div>
-                    <div className="font-light text-sm dark:text-gray-400">
-                        {e.sales} {e.sales > 1 ? 'Units' : 'Unit'} Sold
-                    </div>
+                <div className="mt-1">
+
+                    {promoInfo?.hasPromotion ? (
+                        <>
+                            <div className="text-red-600 font-bold text-md">
+                                {promoInfo.percentage}% OFF
+                            </div>
+
+                            <div className="flex gap-2 items-center">
+                                <div className="text-gray-400 line-through text-sm">
+                                    ZMK {e?.price.toFixed(2)}
+                                </div>
+                                <div className="text-green-600 font-bold text-lg">
+                                    ZMK {promoInfo.finalPrice.toFixed(2)}
+                                </div>
+                            </div>
+
+                            <div className="text-xs text-gray-400">
+                                You save ZMK {promoInfo.discount.toFixed(2)}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-[#1C0F86] dark:text-blue-400 font-bold text-md">
+                            ZMK {e?.price.toFixed(2)}
+                        </div>
+                    )}
+
                 </div>
             </div>
 

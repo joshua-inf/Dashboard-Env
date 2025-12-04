@@ -1,5 +1,5 @@
 'use client'
-import { PlusIcon } from 'lucide-react'
+import { Megaphone, PlusIcon, Sparkles, Upload } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { getOrgData } from '@/lib/createCookie';
 import { getProductsAndServices, ProductWithSales } from '@/services/api/products';
@@ -7,11 +7,13 @@ import { BusinessType } from '@/types/businesses';
 import { ProductCard } from './components/ProductCard';
 import UploadDialog from './components/UploadDialog';
 import AIUploadModal from './components/AIUploadModal';
+import PromotionDialog from './components/PromotionDialog';
 
 export const ProductsAndServices = () => {
     const [loading, setLoading] = useState(false)
     const [productData, setProductData] = useState<ProductWithSales[] | null | undefined>(null)
     const businessData: BusinessType | null | undefined = getOrgData()
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [aiOpenModal, setAiOpenModal] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     // Fetch products for the current business and update state
@@ -40,6 +42,18 @@ export const ProductsAndServices = () => {
             <div className='flex justify-between z-1'>
                 <div className='text-2xl font-bold dark:text-gray-200'>Products and Services</div>
                 <div className='flex gap-4'>
+                    <PromotionDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        products={productData || []}
+                    />
+                    <button
+                        onClick={() => setIsDialogOpen(true)}
+                        className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 py-2 px-4 font-medium text-sm"
+                    >
+                        <Megaphone className="size-4 text-blue-600 dark:text-blue-400" />
+                        <span>Promotion</span>
+                    </button>
                     <UploadDialog
                         open={openModal}
                         onClose={() => setOpenModal(false)}
