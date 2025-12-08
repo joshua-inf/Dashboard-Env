@@ -28,14 +28,14 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const { business_id } = await request.json();
-    console.log(business_id)
+    const { business_alias } = await request.json();
+    console.log(business_alias)
 
     try {
         const { data, error } = await supabase
             .from('businesses')
             .select('*')
-            .eq('id', business_id)
+            .eq('business_name', business_alias)
             .single();
 
         if (!data) {
@@ -48,9 +48,9 @@ export async function POST(request: Request) {
 
         console.log(data)
 
-        if(data)  {
-             return new Response(
-                JSON.stringify({ message: 'data collectd successfully', data : data }),
+        if (data) {
+            return new Response(
+                JSON.stringify({ message: 'data collectd successfully', data: data }),
                 {
                     status: 200,
                     headers: getCorsHeaders(request),
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
             );
         }
 
-        if(error){
+        if (error) {
             console.error("Error fetching business:", error);
             return new Response(JSON.stringify({ message: 'Error fetching business' }), {
                 status: 500,
