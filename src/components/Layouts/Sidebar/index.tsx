@@ -87,7 +87,7 @@ const menuGroups = [
         route: "/wallet",
       },
       {
-        icon: <DocumentTextIcon  className="size-5" />,
+        icon: <DocumentTextIcon className="size-5" />,
         label: "Billing",
         route: "/Billing",
       },
@@ -167,13 +167,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                 <ul className="space-y-1">
                   {group.menuItems.map((menuItem, menuIndex) => (
-                    <li key={menuIndex}>
-                      <SidebarItem
-                        item={menuItem}
-                        pageName={pageName}
-                        setPageName={setPageName}
-                      />
-                    </li>
+                    <SidebarItem
+                      key={menuIndex}
+                      item={menuItem}
+                      pageName={pageName}
+                      setPageName={setPageName}
+                    />
                   ))}
                 </ul>
               </div>

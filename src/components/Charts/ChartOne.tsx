@@ -1,10 +1,11 @@
 "use client";
 
 import { ApexOptions } from "apexcharts";
+import { Props as ApexChartProps } from "react-apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+const ReactApexChart = dynamic<ApexChartProps>(() => import("react-apexcharts").then((mod) => mod.default), {
   ssr: false,
 });
 

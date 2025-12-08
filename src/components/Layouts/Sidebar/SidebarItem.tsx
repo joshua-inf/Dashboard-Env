@@ -66,33 +66,30 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProp) => {
           transform ${isItemActive ? 'scale-[1.02]' : 'scale-100'}
         `}
       >
-        
+
 
         {/* Main Content */}
         <div className="flex items-center gap-3 min-w-0 flex-1 relative z-10">
           {/* Animated Icon */}
           <div className={`
             relative p-2 rounded-lg transition-all duration-300
-            ${isItemActive 
-              ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-110" 
+            ${isItemActive
+              ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-110"
               : "bg-gray-100 dark:bg-gray-700 group-hover:bg-gray-200 dark:group-hover:bg-gray-600"
             }
           `}>
-            {React.cloneElement(item.icon as React.ReactElement, {
-              className: `w-4 h-4 transition-colors ${isItemActive ? 'text-white' : ''}`
-            })}
-            
+
             {/* Icon Pulse Effect */}
             {isItemActive && (
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 animate-ping opacity-20" />
             )}
           </div>
-          
+
           {/* Label with Gradient Text */}
           <span className={`
             text-sm truncate font-medium bg-clip-text
-            ${isItemActive 
-              ? "text-gray-700 fw-bold" 
+            ${isItemActive
+              ? "text-gray-700 fw-bold"
               : ""
             }
             transition-all duration-300
@@ -109,11 +106,11 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProp) => {
               px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap
               transition-all duration-300 transform
               ${isItemActive
-                ? item.badge === 'AI' 
-                  ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 shadow-sm scale-105' 
-                  : item.badge === 'Beta' 
-                  ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/40 shadow-sm scale-105'
-                  : 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 shadow-sm scale-105'
+                ? item.badge === 'AI'
+                  ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 shadow-sm scale-105'
+                  : item.badge === 'Beta'
+                    ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/40 shadow-sm scale-105'
+                    : 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 shadow-sm scale-105'
                 : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 scale-100'
               }
             `}>
@@ -125,8 +122,8 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProp) => {
           {hasChildren && (
             <ChevronDownIcon className={`
               w-4 h-4 transition-all duration-300 flex-shrink-0
-              ${isCurrentlyExpanded 
-                ? "rotate-180 text-blue-500 scale-110" 
+              ${isCurrentlyExpanded
+                ? "rotate-180 text-blue-500 scale-110"
                 : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
               }
             `} />
@@ -143,8 +140,8 @@ const SidebarItem = ({ item, pageName, setPageName }: SidebarItemProp) => {
       {shouldRenderChildren && hasChildren && (
         <div className={`
           transform transition-all duration-300 ease-out overflow-hidden
-          ${isExpanded 
-            ? "max-h-96 opacity-100 translate-y-0" 
+          ${isExpanded
+            ? "max-h-96 opacity-100 translate-y-0"
             : "max-h-0 opacity-0 -translate-y-4"
           }
         `}>

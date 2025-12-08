@@ -1,12 +1,11 @@
 'use client'
-
 import "../css/style.css"
 import React from "react"
 import ReactQueryProvider from "@/components/ReactQueryProvider"
 import { themeScript } from "./theme-script"
 import { Provider } from "react-redux"
 import { store } from "@/store/store"
-import InitUserData from "./InitUserData"
+import ClientProviders from "./ClientProviders"
 
 export default function RootLayout({
   children,
@@ -15,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <Provider store={store}>
-      <html lang="en">
+      <html>
         <head>
           <script
             dangerouslySetInnerHTML={{ __html: themeScript() }}
@@ -24,14 +23,12 @@ export default function RootLayout({
           <meta name="theme-color" />
           <title>Trybae Solutions</title>
         </head>
-        <body suppressHydrationWarning={true}>
+        <body suppressHydrationWarning>
           <ReactQueryProvider>
             {/* Load user data when app starts */}
-            <div className="dark:bg-gray-800">
-              <InitUserData>
-                {children}
-              </InitUserData>
-            </div>
+            <ClientProviders>
+              {children}
+            </ClientProviders>
           </ReactQueryProvider>
         </body>
       </html>

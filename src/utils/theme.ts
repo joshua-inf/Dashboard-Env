@@ -31,9 +31,11 @@ export const initializeTheme = () => {
 
 // Toggle theme and save to localStorage
 export const toggleTheme = () => {
-  if (!isClient) return;
+  console.log('clicked')
+  if (!isClient) return false;
 
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('darkMode', isDark.toString());
-  return isDark;
-}; 
+  const isDark = document.documentElement.classList.toggle("dark");
+  localStorage.setItem("darkMode", isDark ? "true" : "false");
+
+  return isDark; // return boolean
+};

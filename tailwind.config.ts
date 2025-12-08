@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-	darkMode: ["class"],
+	darkMode: "class",
 	content: [
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -15,7 +15,7 @@ const config: Config = {
 				transparent: "transparent",
 				white: "#FFFFFF",
 				black: "#1C2434",
-				
+
 				// UI colors
 				stroke: "#E2E8F0",
 				strokedark: "#2E3A47",
@@ -61,5 +61,4 @@ const config: Config = {
 };
 
 export default config;
-  
-  
+

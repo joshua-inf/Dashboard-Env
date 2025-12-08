@@ -41,9 +41,6 @@ const SidebarDropdown: React.FC<SidebarItemProp> = ({ item, withIcons = false })
                     : "text-gray-400  "
                   }
                 `}>
-                  {React.cloneElement(child.icon as React.ReactElement, {
-                    className: "w-3.5 h-3.5"
-                  })}
                 </div>
               ) : (
                 <div className={`

@@ -24,7 +24,7 @@ export default function InitUserData({ children }: { children: React.ReactNode }
                 })
 
                 if (!response.ok) {
-                    console.error('Failed to refresh token:', response.statusText)
+                    console.error('Failed to refresh token:')
                     return
                 }
 
@@ -34,6 +34,7 @@ export default function InitUserData({ children }: { children: React.ReactNode }
                 }
             } catch (err) {
                 console.error('Error fetching user data:', err)
+                console.log('Error fetching user data:', err)
             } finally {
                 setLoader(false)
             }

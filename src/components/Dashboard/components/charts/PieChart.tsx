@@ -16,11 +16,11 @@ interface GenderData {
 
 export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps) => {
   const genderData: GenderData = data?.GenderSales || {};
-  
+
   const totalSales = (genderData.Salesbyfemale || 0) + (genderData.Salesbymale || 0);
   const femalePercentage = totalSales > 0 ? ((genderData.Salesbyfemale || 0) / totalSales) * 100 : 0;
   const malePercentage = totalSales > 0 ? ((genderData.Salesbymale || 0) / totalSales) * 100 : 0;
-  
+
   const getDominantGender = () => {
     if (femalePercentage > malePercentage) return { gender: 'female', percentage: femalePercentage };
     if (malePercentage > femalePercentage) return { gender: 'male', percentage: malePercentage };
@@ -30,7 +30,7 @@ export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps)
   const dominantGender = getDominantGender();
 
   const series = [genderData.Salesbyfemale || 0, genderData.Salesbymale || 0];
-  
+
   const options: ApexOptions = {
     chart: {
       type: 'donut',
@@ -86,7 +86,7 @@ export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps)
               fontWeight: 'bold',
               color: '#111827',
               formatter: function (val) {
-                return `${parseFloat(val).toFixed(0)}%`;
+                return `${parseFloat(val.toString()).toFixed(0)}%`;
               }
             },
             total: {
@@ -160,14 +160,13 @@ export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps)
             </p>
           </div>
         </div>
-        
-        <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${
-          dominantGender.gender === 'female' 
-            ? 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400'
-            : dominantGender.gender === 'male'
+
+        <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${dominantGender.gender === 'female'
+          ? 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400'
+          : dominantGender.gender === 'male'
             ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
             : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-        }`}>
+          }`}>
           {dominantGender.gender === 'female' ? (
             <Venus className="w-4 h-4" />
           ) : dominantGender.gender === 'male' ? (
@@ -203,7 +202,7 @@ export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps)
             {((genderData.Salesbyfemale || 0) / 1000).toFixed(1)}K sales
           </div>
         </div>
-        
+
         <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <div className="flex items-center justify-center gap-2 mb-1">
             <Mars className="w-4 h-4 text-blue-500" />
@@ -250,7 +249,7 @@ export const SalesByCategory = ({ data, loading = false }: SalesByCategoryProps)
 export const PieChart = ({ data }: { data: any }) => {
   const genderData = data?.GenderSales || {};
   const series = [genderData.Salesbyfemale || 0, genderData.Salesbymale || 0];
-  
+
   const options: ApexOptions = {
     chart: {
       type: 'donut',

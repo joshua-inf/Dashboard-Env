@@ -14,7 +14,7 @@ const DarkModeSwitcher = () => {
     <li className="flex items-center gap-2">
       <button
         onClick={toggleTheme}
-        className="flex items-center rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-boxdark transition-colors"
+        className="flex items-center cursor-pointer rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label="Toggle theme"
       >
         <SunIcon width={20} className=" text-gray-800 block dark:hidden" />

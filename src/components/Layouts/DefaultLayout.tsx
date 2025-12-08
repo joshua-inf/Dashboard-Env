@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 
 // custom import can be replaced
-import { createCookie, getData, getOrgData, storeData } from "@/lib/createCookie";
+import { getOrgData } from "@/lib/createCookie";
 import { BusinessType } from "@/types/businesses";
 import SubscriptionWall from "../SubscriptionWall/SubscriptionWall";
 import Cookies from "js-cookie";

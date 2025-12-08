@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "esnext",
     "downlevelIteration": true,
-    "types": ["node", "react", "react-dom"],
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ],
     "lib": [
       "dom",
       "dom.iterable",
@@ -12,13 +16,14 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -37,8 +42,12 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next.config.ts",
-    "build/types/**/*.ts"
-, "next.config.js", "front/src/app/api/recent-questions/route.ts", "src/app/settings/page.jsx"  ],
+    "build/types/**/*.ts",
+    "next.config.mjs",
+    "front/src/app/api/recent-questions/route.ts",
+    "src/app/settings/page.jsx",
+    "build/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -93,7 +93,7 @@ const Header = ({
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-boxdark/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg">
         <div className="flex items-center justify-between px-6 py-3">
           {/* Left Section */}
           <div className="flex items-center gap-4">
@@ -116,7 +116,7 @@ const Header = ({
             <Link href="/" className="flex items-center gap-4 group">
               <div className="flex flex-col gap-2">
                 <div>
-                  <LightDarkLogo className="h-5" />
+                  <LightDarkLogo className="h-4" />
                 </div>
                 {businessData && (
                   <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
@@ -216,7 +216,7 @@ const Header = ({
                 onClick={() => setModalOpen(false)}
               ></div>
 
-              <div className="relative z-[90] w-[90%] max-w-md bg-white dark:bg-boxdark rounded-lg shadow-lg overflow-y-auto p-6 space-y-4 text-gray-800 dark:text-white">
+              <div className="relative z-[90] w-[90%] max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-y-auto p-6 space-y-4 text-gray-800 dark:text-white">
                 <div className=" p-6 space-y-6">
                   {/* Header */}
                   <div className="text-center">

@@ -7,13 +7,13 @@ import { Users, PieChart } from 'lucide-react';
 const GenderPieChart = ({ gender }: { gender: genderType }) => {
     // Validate and process gender data
     const hasValidData = gender && (
-        gender.male > 0 || 
+        gender.male > 0 ||
         gender.female > 0
     );
 
     // Prepare series and labels
     const series = [
-        gender?.male || 0, 
+        gender?.male || 0,
         gender?.female || 0
     ].filter(value => value > 0);
 
@@ -70,8 +70,8 @@ const GenderPieChart = ({ gender }: { gender: genderType }) => {
                             fontSize: '16px',
                             fontWeight: 'bold',
                             color: '#1A0670',
-                            formatter: function (val) {
-                                return val;
+                            formatter: (val) => {
+                                return val.toString();
                             }
                         },
                         total: {
@@ -139,7 +139,7 @@ const GenderPieChart = ({ gender }: { gender: genderType }) => {
                 type="donut"
                 height={220}
             />
-            
+
             {/* Additional summary */}
             <div className="text-center mt-2">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
