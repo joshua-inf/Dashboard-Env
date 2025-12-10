@@ -78,7 +78,7 @@ const CustomerGenderRatio = () => {
     }, [])
 
     return (
-        <div className='pt-20 flex flex-col gap-5 items-center p-3 dark:bg-boxdark dark:text-white'>
+        <div className=' flex flex-col gap-5 items-center p-3 dark:bg-boxdark dark:text-white'>
             <div className='w-full'>
                 <div className='flex gap-4 items-center'>
                     <button className='' onClick={() => navigation.back()}>
@@ -91,8 +91,8 @@ const CustomerGenderRatio = () => {
                 <div>
                 </div>
             </div>
-            <div className='w-full'>
-                <div className="w-full max-w-xs">
+            <div className='w-full flex items-center justify-between'>
+                <div className="grow w-full">
                     <label htmlFor="gender-select" className="block mb-1 text-sm text-gray-700 dark:text-gray-300">
                         Select Gender
                     </label>
@@ -109,8 +109,7 @@ const CustomerGenderRatio = () => {
                 </div>
 
 
-                <div className='w-full flex items-center pe-5 justify-end'>
-
+                <div className='w-full flex items-center justify-end'>
                     <DropdownMenu>
                         <DropdownMenuTrigger className='flex text-lg items-center bg-white dark:bg-boxdark'>
                             <FilterIcon className='size-4' />
@@ -204,7 +203,6 @@ const CustomerGenderRatio = () => {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-
                 </div>
             </div>
             {
@@ -218,9 +216,9 @@ const CustomerGenderRatio = () => {
                             customerData ?
                                 <div className='flex w-full'>
                                     <div className='flex flex-col gap-5 grow'>
-                                        <div className='flex flex-wrap justify-between '>
+                                        <div className='flex flex-wrap gap-4 justify-between '>
                                             <div className='grow text-center'>
-                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW {gender == 'male' ? data?.Revenue.male : gender == "female" ? data?.Revenue.female :( data?.Revenue.male ?? 0) + (data?.Revenue.female ?? 0)}</div>
+                                                <div className='text-2xl text-[#1A0670] dark:text-white font-bold'>ZMW {gender == 'male' ? data?.Revenue.male : gender == "female" ? data?.Revenue.female : (data?.Revenue.male ?? 0) + (data?.Revenue.female ?? 0)}</div>
                                                 <div className='font-light'>Revenue from {gender ? gender : 'all'}</div>
                                             </div>
                                             <div className='grow text-center'>

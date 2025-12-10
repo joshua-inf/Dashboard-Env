@@ -8,9 +8,6 @@ import { BusinessType } from "@/types/businesses";
 import { getOrgData } from "@/lib/createCookie";
 import { SalesRevenueByRegion } from "./customcomponents/SalesRevenueByRegion";
 import { PeakSalePeriod } from "./customcomponents/PeakSalePeriod";
-import AreaChart from "./components/AreaChart";
-import { useCallback } from "react";
-import { BestSeller } from "./customcomponents/BestSeller";
 
 // Loading skeleton reused for multiple sections
 const LoadingSkeleton = () => (
@@ -56,6 +53,7 @@ const SalesAnalytics: React.FC = () => {
   const [data, setData] = useState<null | SalesAnalyticsData>(null);
   const [Loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasData, setHasData] = useState(true)
 
   const getProductsPageData = async () => {
     if (!businessData?.id) {
@@ -68,8 +66,12 @@ const SalesAnalytics: React.FC = () => {
       const res: any = await getDataforsalseAnalytics(businessData.id);
       setData(res);
       console.log('successfully requested data', res)
+      if (res == null) {
+        setHasData(false)
+      }
     } catch (errr) {
       console.log(errr);
+      setHasData(false)
       setError("Failed to fetch data. Please try again.");
     } finally {
       setLoading(false);
@@ -82,10 +84,9 @@ const SalesAnalytics: React.FC = () => {
   }, []);
 
   // Check if data is empty or has no meaningful content
-  const hasData = true;
 
   return (
-    <div className="flex flex-col gap-5 p-4 py-20 justify-center">
+    <div className="flex flex-col gap-5  justify-center">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Sales Analytics

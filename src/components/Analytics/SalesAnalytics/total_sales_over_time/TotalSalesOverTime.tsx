@@ -117,7 +117,7 @@ const TotalSalesOverTime = () => {
     };
 
     return (
-        <div className='pt-20 flex flex-col gap-10 p-3'>
+        <div className=' flex flex-col gap-10 p-3'>
             {/* Header */}
             <div className="w-full space-y-4">
                 {/* Main Header */}

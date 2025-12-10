@@ -139,7 +139,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 p-2">
+    <div className="space-y-6 ">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -195,7 +195,7 @@ const Dashboard: React.FC = () => {
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="p-6">
+              <div className="p-2">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-blue-500" />
                   Orders Overview
@@ -205,7 +205,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="p-6">
+              <div className="p-2">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5 text-green-500" />
                   Customer Analytics
@@ -218,14 +218,14 @@ const Dashboard: React.FC = () => {
           {/* Bottom Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="p-6">
+              <div className="p-2">
                 <Header title="Sales By Category" Icon={FilterX} />
                 <SalesByCategory data={data} />
               </div>
             </div>
 
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="p-6">
+              <div className="p-2">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <Clock10Icon className="w-5 h-5 text-blue-500" />
                   Recent Orders
@@ -236,7 +236,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Additional Charts (Hidden on mobile) */}
-         <TotalRevenueCont data={data} />
+          <TotalRevenueCont data={data} />
         </>
       )}
     </div>

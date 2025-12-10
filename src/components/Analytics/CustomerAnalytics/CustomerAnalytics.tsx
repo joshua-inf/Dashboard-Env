@@ -108,7 +108,7 @@ export const CustomerAnalytics = () => {
     (customerRetention && customerRetention > 0);
 
   return (
-    <div className="flex flex-col text-sm dark:text-white gap-5 py-20 justify-center">
+    <div className="flex flex-col text-sm dark:text-white gap-5 justify-center">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Customer Analytics

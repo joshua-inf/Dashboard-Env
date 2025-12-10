@@ -39,7 +39,7 @@ const PieChart = ({ data }: { data: null | SalesAnalyticsData }) => {
         options={options}
         series={series}
         type="pie"
-        height={400}
+        height={300}
         width="100%"
       />
     </>

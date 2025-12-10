@@ -151,7 +151,7 @@ export const Businesses = () => {
 
 
     return (
-        <div className="space-y-8 p-6">
+        <div className="space-y-8 ">
             <BusinessSelectionPopup
                 businessIds={businesses}
                 subscription={sunsubscription?.registeredBusinesses || null}
@@ -183,7 +183,7 @@ export const Businesses = () => {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex justify-end w-full items-center gap-3">
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         {organisationData?.length || 0} businesses
                     </span>
@@ -200,7 +200,7 @@ export const Businesses = () => {
 
             {/* Search and Filter Bar */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-4 border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="flex flex gap-4 items-center">
                     {/* Search Input */}
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

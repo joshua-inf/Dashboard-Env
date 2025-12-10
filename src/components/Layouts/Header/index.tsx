@@ -34,8 +34,8 @@ const Header = ({
   const [loading, setLoading] = useState(false);
   const businessData: BusinessType | null = getOrgData();
 
-  const generateOrderLink = (id: string, companyAlias: string) => {
-    const link = `https://payment.inxource.com/payment/?id=${id}&companyAlias=${companyAlias}`;
+  const generateOrderLink = (companyAlias: string) => {
+    const link = `https://payment.inxource.com/payment/${companyAlias}`;
     setQrText(link);
   };
 
@@ -115,14 +115,15 @@ const Header = ({
             {/* Logo and Brand */}
             <Link href="/" className="flex items-center gap-4 group">
               <div className="flex flex-col gap-2">
-                <div>
-                  <LightDarkLogo className="h-4" />
-                </div>
-                {businessData && (
+                {businessData ?
                   <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
                     {businessData.business_name}
                   </span>
-                )}
+                  :
+                  <div>
+                    <LightDarkLogo className="h-6" />
+                  </div>
+                }
               </div>
             </Link>
 
@@ -235,7 +236,7 @@ const Header = ({
                   <button
                     onClick={() => {
                       if (businessData?.id && businessData?.company_alias) {
-                        generateOrderLink(businessData.id, businessData.company_alias);
+                        generateOrderLink(businessData.business_name);
                       }
                     }}
                     className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-[1.02]"

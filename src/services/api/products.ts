@@ -45,9 +45,6 @@ export const getDataforsalseAnalytics = async (
 
         if (!orders) return null;
 
-
-
-
         // Get today's date
         const today = new Date();
 
