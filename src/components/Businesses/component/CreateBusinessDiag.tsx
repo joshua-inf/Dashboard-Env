@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { ImagePreview } from "@/services/api/products"
-import { createBusiness } from "@/services/api/apiBusiness"
+import { createBusiness, getBusinessByName } from "@/services/api/apiBusiness"
 import { Upload, Building2, X, Loader2, CheckCircle, AlertCircle, Sparkles, ArrowLeft, ArrowRight } from "lucide-react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
@@ -26,6 +26,8 @@ export const CreateBusinessDiag = ({ isOpen, onClose, getBusinessByUserID }: Cre
     const [companyAlias, setCompanyAlias] = useState('')
     const [selectedImages, setSelectedImages] = useState<ImagePreview | null>(null)
     const [error, setError] = useState('')
+    const [loadingName, setLoadingName] = useState(false)
+    const [nameError, setNameError] = useState<null | string>(null)
     const [success, setSuccess] = useState(false)
     const [currentStep, setCurrentStep] = useState<FormStep>('basic')
     const [formData, setFormData] = useState({
@@ -126,6 +128,22 @@ export const CreateBusinessDiag = ({ isOpen, onClose, getBusinessByUserID }: Cre
         }
     }
 
+    const chechForBusinessName = async (e: string) => {
+        try {
+            setLoadingName(true)
+            const hasBusinesses = await getBusinessByName(e.trim())
+            if (hasBusinesses && hasBusinesses?.length > 0) {
+                setNameError('Business name already exists')
+                return
+            }
+            setNameError('')
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setLoadingName(false)
+        }
+    }
+
     const addBusiness = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setLoading(true)
@@ -176,6 +194,15 @@ export const CreateBusinessDiag = ({ isOpen, onClose, getBusinessByUserID }: Cre
             resetForm()
             onClose()
         }
+    }
+
+    const handleOnChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.value
+        setFormData(prev => ({
+            ...prev,
+            business_name: name
+        }))
+        chechForBusinessName(e.target.value)
     }
 
     // Render Basic Information Step
@@ -256,12 +283,13 @@ export const CreateBusinessDiag = ({ isOpen, onClose, getBusinessByUserID }: Cre
                 {/* Business Name */}
                 <div className="space-y-3">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Business Name *
+                        Business Name * {loadingName && <Loader2 className="animate-spin" />}
+                        {nameError && <span className="text-red-500">{nameError}</span>}
                     </label>
                     <Input
                         required
                         value={formData.business_name}
-                        onChange={(e) => handleInputChange('business_name', e.target.value)}
+                        onChange={(e) => handleOnChangeName(e)}
                         type="text"
                         placeholder="Enter your business name"
                         className="w-full px-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-gray-200/50 dark:border-gray-600/50 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white"
@@ -516,7 +544,7 @@ export const CreateBusinessDiag = ({ isOpen, onClose, getBusinessByUserID }: Cre
                                         onClick={handleNext}
                                         disabled={
                                             (currentStep === 'basic' && (!formData.business_name || !formData.industry)) ||
-                                            loading
+                                            loading || nameError != null
                                         }
                                         className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
                                     >

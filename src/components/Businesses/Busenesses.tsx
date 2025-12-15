@@ -52,6 +52,8 @@ export const Businesses = () => {
     }, [])
 
 
+
+
     const checkifhasbusinessesLocal = () => {
         checkifhasbusinesses(userData.id)
             .then((res) => {

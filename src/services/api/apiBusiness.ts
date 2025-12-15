@@ -298,13 +298,13 @@ const checkifPartofTeamSub = async (business_id?: string, userID?: string) => {
             .contains("registeredBusinesses", [business_id])
 
         if (data) {
-             let filteredData = data.filter((sub) => {
+            let filteredData = data.filter((sub) => {
                 const duration = sub.subscriptionTable?.duration_in_days || 0;
 
                 return isStillValid(sub.created_at, duration, sub.subscriptionTable.period);
             });
 
-            if(filteredData.length > 0){
+            if (filteredData.length > 0) {
                 return true
             }
 
@@ -348,5 +348,28 @@ const checkNormal = async (business_id?: string, userID?: string) => {
 
     } catch (err) {
         return false
+    }
+}
+
+
+export const getBusinessByName = async (name: string) => {
+    try {
+        const { data, error } = await supabase
+            .from("businesses")
+            .select("*")
+            .ilike("business_name", `%${name.toLowerCase().trim()}%`)
+
+        if (data) {
+            // console.log("business name: ", data)
+            return data
+        }
+
+        if (error) {
+            // console.log("error: ", error)
+            return null
+        }
+
+    } catch (err) {
+        return null
     }
 }
