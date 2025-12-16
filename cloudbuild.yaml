@@ -5,7 +5,7 @@ options:
 # IMPORTANT: Map the secret name in Secret Manager to a local environment variable name
 available_secrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/OPENAI_API_KEY/versions/latest
+    - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
       env: '_OPENAI_KEY'
     - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_SUPABASE_KEY/versions/latest
       env: '_NEXT_PUBLIC_SUPABASE_KEY'
