@@ -1,32 +1,18 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-
-availableSecrets:
-  secretManager:
-  - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
-    env: OPENAI_KEY
-
+  
 steps:
-  # 1️⃣ Install dependencies
+  # 1. Install dependencies
   - name: 'node:22'
     entrypoint: 'npm'
     args: ['install']
-    env:
-      - 'NODE_ENV=production'
 
-  # 2️⃣ Build Next.js
+  # 2. Build your Next.js app
   - name: 'node:22'
     entrypoint: 'npm'
     args: ['run', 'build']
-    env:
-      - 'NODE_ENV=production'
-      - 'NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co'
-      - 'SUPABASE_BUCKET=uploaded-files'
-      - 'NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in'
-      - 'NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up'
-      - 'OPENAI_KEY=$$OPENAI_KEY'
 
-  # 3️⃣ Deploy to Cloud Run
+  # 3. Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
