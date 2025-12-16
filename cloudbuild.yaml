@@ -29,15 +29,8 @@ steps:
     env:
       # Public / safe for frontend
       - _NODE_ENV=production
-      - _SUPABASE_BUCKET=uploaded-files
-      - _NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co
-      - _NEXT_PUBLIC_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhaWNnZXRubndwdHhicW9veXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4MzI0MzksImV4cCI6MjA0NzQwODQzOX0.RZex9divfq6kxl8jwHeOvhvB_Qwqu4UiTuPz-4rOmEY
-      - _NEXT_PUBLIC_PORT=8080
-      - _NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-      - _NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-      - _NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Z2VudWluZS1yYWNlci0zNi5jbGVyay5hY2NvdW50cy5kZXYk
-
-      # Secrets injected from Secret Manager (used in this step)
+      
+      # Secrets injected from Secret Manager (match the updated Cloud Run env names)
       - _SMTP_PASS=$_SMTP_PASS
       - _SMTP_USER=$_SMTP_USER
       - _SMTP_HOST=$_SMTP_HOST
@@ -56,7 +49,7 @@ steps:
           --allow-unauthenticated \
           --source .
     env:
-      # Optional: pass runtime secrets to deploy step
+      # Optional: pass secrets to deploy step if needed
       - _SMTP_PASS=$_SMTP_PASS
       - _SMTP_USER=$_SMTP_USER
       - _SMTP_HOST=$_SMTP_HOST
