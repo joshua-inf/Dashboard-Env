@@ -21,11 +21,6 @@ steps:
     args: ['install']
     env:
       - _NODE_ENV=production
-      - _SMTP_PASS=$$_SMTP_PASS
-      - _SMTP_USER=$$_SMTP_USER
-      - _SMTP_HOST=$$_SMTP_HOST
-      - _SMTP_PORT=$$_SMTP_PORT
-      - _OPENAI_KEY=$$_OPENAI_KEY
 
   # 2️⃣ Build Next.js
   - name: node:24
@@ -42,12 +37,12 @@ steps:
       - _NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
       - _NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Z2VudWluZS1yYWNlci0zNi5jbGVyay5hY2NvdW50cy5kZXYk
 
-      # Secrets injected from Secret Manager
-      - _SMTP_PASS=$$_SMTP_PASS
-      - _SMTP_USER=$$_SMTP_USER
-      - _SMTP_HOST=$$_SMTP_HOST
-      - _SMTP_PORT=$$_SMTP_PORT
-      - _OPENAI_KEY=$$_OPENAI_KEY
+      # Secrets injected from Secret Manager (used in this step)
+      - _SMTP_PASS=$_SMTP_PASS
+      - _SMTP_USER=$_SMTP_USER
+      - _SMTP_HOST=$_SMTP_HOST
+      - _SMTP_PORT=$_SMTP_PORT
+      - _OPENAI_KEY=$_OPENAI_KEY
 
   # 3️⃣ Deploy to Cloud Run
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
@@ -60,3 +55,10 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source .
+    env:
+      # Optional: pass runtime secrets to deploy step
+      - _SMTP_PASS=$_SMTP_PASS
+      - _SMTP_USER=$_SMTP_USER
+      - _SMTP_HOST=$_SMTP_HOST
+      - _SMTP_PORT=$_SMTP_PORT
+      - _OPENAI_KEY=$_OPENAI_KEY
