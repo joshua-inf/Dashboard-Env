@@ -12,21 +12,18 @@ steps:
     entrypoint: 'npm'
     args: ['install']
     env:
-      - 'OPENAI_KEY=$$OPENAI_KEY'
+      - 'NODE_ENV=production'
 
-  # 2️⃣ Build Next.js (SECRETS NEEDED HERE)
+  # 2️⃣ Build Next.js
   - name: 'node:22'
     entrypoint: 'npm'
     args: ['run', 'build']
     env:
-      # Public / non-secret
       - 'NODE_ENV=production'
       - 'NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co'
       - 'SUPABASE_BUCKET=uploaded-files'
       - 'NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in'
       - 'NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up'
-
-      # Secrets (from Secret Manager)
       - 'OPENAI_KEY=$$OPENAI_KEY'
 
   # 3️⃣ Deploy to Cloud Run
@@ -40,5 +37,3 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source .
-    env:
-      - 'OPENAI_KEY=$$OPENAI_KEY'
