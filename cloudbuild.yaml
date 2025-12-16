@@ -21,6 +21,11 @@ steps:
     args: ['install']
     env:
       - _NODE_ENV=production
+      - _SMTP_PASS=$$_SMTP_PASS
+      - _SMTP_USER=$$_SMTP_USER
+      - _SMTP_HOST=$$_SMTP_HOST
+      - _SMTP_PORT=$$_SMTP_PORT
+      - _OPENAI_KEY=$$_OPENAI_KEY
 
   # 2️⃣ Build Next.js
   - name: node:24
