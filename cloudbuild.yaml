@@ -27,10 +27,16 @@ steps:
     entrypoint: npm
     args: ['run', 'build']
     env:
-      # Public / safe for frontend
       - _NODE_ENV=production
-      
-      # Secrets injected from Secret Manager (match the updated Cloud Run env names)
+      - _SUPABASE_BUCKET=uploaded-files
+      - _NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co
+      - _NEXT_PUBLIC_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      - _NEXT_PUBLIC_PORT=8080
+      - _NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+      - _NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+      - _NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Z2VudWluZS1yYWNlci0zNi5jbGVyay5hY2NvdW50cy5kZXYk
+
+      # Secrets from Secret Manager
       - _SMTP_PASS=$_SMTP_PASS
       - _SMTP_USER=$_SMTP_USER
       - _SMTP_HOST=$_SMTP_HOST
@@ -48,10 +54,3 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source .
-    env:
-      # Optional: pass secrets to deploy step if needed
-      - _SMTP_PASS=$_SMTP_PASS
-      - _SMTP_USER=$_SMTP_USER
-      - _SMTP_HOST=$_SMTP_HOST
-      - _SMTP_PORT=$_SMTP_PORT
-      - _OPENAI_KEY=$_OPENAI_KEY
