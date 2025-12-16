@@ -12,7 +12,7 @@ available_secrets:
 
 steps:
   # 1️⃣ Install dependencies
-  - name: node:24
+  - name: node:22
     entrypoint: npm
     args: ['install']
     env:
@@ -20,7 +20,7 @@ steps:
 
   # 2️⃣ Build Next.js
   # We must pass the secrets as ENVs to the build command (npm run build)
-  - name: node:24
+  - name: node:22
     entrypoint: npm
     args: ['run', 'build']
     secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY'] 
