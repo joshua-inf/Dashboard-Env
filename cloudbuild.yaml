@@ -4,15 +4,15 @@ options:
 availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/SMTP_PASS/versions/latest
-      env: SMTP_PASS
+      env: _SMTP_PASS
     - versionName: projects/$PROJECT_ID/secrets/SMTP_USER/versions/latest
-      env: SMTP_USER
+      env: _SMTP_USER
     - versionName: projects/$PROJECT_ID/secrets/SMTP_HOST/versions/latest
-      env: SMTP_HOST
+      env: _SMTP_HOST
     - versionName: projects/$PROJECT_ID/secrets/SMTP_PORT/versions/latest
-      env: SMTP_PORT
+      env: _SMTP_PORT
     - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
-      env: OPENAI_KEY
+      env: _OPENAI_KEY
 
 steps:
   # 1️⃣ Install dependencies
@@ -20,7 +20,7 @@ steps:
     entrypoint: npm
     args: ['install']
     env:
-      - NODE_ENV=production
+      - _NODE_ENV=production
 
   # 2️⃣ Build Next.js
   - name: node:24
@@ -28,15 +28,21 @@ steps:
     args: ['run', 'build']
     env:
       # Public / safe for frontend
-      - NODE_ENV=production
-      - SUPABASE_BUCKET=uploaded-files
+      - _NODE_ENV=production
+      - _SUPABASE_BUCKET=uploaded-files
+      - _NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co
+      - _NEXT_PUBLIC_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhaWNnZXRubndwdHhicW9veXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4MzI0MzksImV4cCI6MjA0NzQwODQzOX0.RZex9divfq6kxl8jwHeOvhvB_Qwqu4UiTuPz-4rOmEY
+      - _NEXT_PUBLIC_PORT=8080
+      - _NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+      - _NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+      - _NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Z2VudWluZS1yYWNlci0zNi5jbGVyay5hY2NvdW50cy5kZXYk
 
       # Secrets injected from Secret Manager
-      - SMTP_PASS=$$SMTP_PASS
-      - SMTP_USER=$$SMTP_USER
-      - SMTP_HOST=$$SMTP_HOST
-      - SMTP_PORT=$$SMTP_PORT
-      - OPENAI_KEY=$$OPENAI_KEY
+      - _SMTP_PASS=$$_SMTP_PASS
+      - _SMTP_USER=$$_SMTP_USER
+      - _SMTP_HOST=$$_SMTP_HOST
+      - _SMTP_PORT=$$_SMTP_PORT
+      - _OPENAI_KEY=$$_OPENAI_KEY
 
   # 3️⃣ Deploy to Cloud Run
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
