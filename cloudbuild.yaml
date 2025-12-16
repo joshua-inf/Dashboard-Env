@@ -26,3 +26,6 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source .
+    env:
+      - _OPENAI_KEY=$_OPENAI_KEY
+      - _NEXT_PUBLIC_SUPABASE_KEY=$_NEXT_PUBLIC_SUPABASE_KEY
