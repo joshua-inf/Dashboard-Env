@@ -33,22 +33,11 @@ steps:
     env:
       # Public / safe for frontend
       - NODE_ENV=production
-      - NEXT_PUBLIC_SUPABASE_URL=https://gaicgetnnwptxbqooywd.supabase.co
-      - NEXT_PUBLIC_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhaWNnZXRubndwdHhicW9veXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4MzI0MzksImV4cCI6MjA0NzQwODQzOX0.RZex9divfq6kxl8jwHeOvhvB_Qwqu4UiTuPz-4rOmEY
-      - NEXT_PUBLIC_PORT=8080
       - SUPABASE_BUCKET=uploaded-files
-      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Z2VudWluZS1yYWNlci0zNi5jbGVyay5hY2NvdW50cy5kZXYk
-      - NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-      - NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
       # Secrets injected from Secret Manager
-      - SUPABASE_PASSWORD=$$SUPABASE_PASSWORD
-      - SUPABASE_PASSWORD_PB=$$SUPABASE_PASSWORD_PB
-      - CLERK_SECRET_KEY=$$CLERK_SECRET_KEY
       - SMTP_PASS=$$SMTP_PASS
-      - GEMINI_KEY=$$GEMINI_KEY
       - OPENAI_KEY=$$OPENAI_KEY
-      - SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=$$SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET
 
   # 3️⃣ Deploy to Cloud Run
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
