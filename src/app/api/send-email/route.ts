@@ -35,15 +35,15 @@ Please review and process accordingly.
     port: 587,
     secure: false,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: process.env._SMTP_USER,
+      pass: process.env._SMTP_PASS,
     },
   });
 
   try {
     // 1. Send to user
     await transporter.sendMail({
-      from: `"InXource" <${process.env.SMTP_USER}>`,
+      from: `"InXource" <${process.env._SMTP_USER}>`,
       to,
       subject: userSubject,
       text: userText,
@@ -51,8 +51,8 @@ Please review and process accordingly.
 
     // 2. Send to admin/internal email
     await transporter.sendMail({
-      from: `"InXource" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER, // replace with your actual admin email
+      from: `"InXource" <${process.env._SMTP_USER}>`,
+      to: process.env._SMTP_USER, // replace with your actual admin email
       subject: adminSubject,
       text: adminText,
     });

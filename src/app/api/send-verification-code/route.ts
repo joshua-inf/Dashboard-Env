@@ -142,22 +142,22 @@ export async function POST(req: NextRequest) {
 
     const template = emailTemplates[purpose as keyof typeof emailTemplates] || emailTemplates.password_reset;
 
-    console.log("SMTP_USER:", process.env.SMTP_USER);
-    console.log("SMTP_PASS:", process.env.SMTP_PASS);
+    console.log("SMTP_USER:", process.env._SMTP_USER);
+    console.log("SMTP_PASS:", process.env._SMTP_PASS);
 
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: parseInt(process.env.SMTP_PORT || '587'),
+        host: process.env._SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env._SMTP_PORT || '587'),
         secure: false,
         auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+            user: process.env._SMTP_USER,
+            pass: process.env._SMTP_PASS,
         },
     });
 
     try {
         await transporter.sendMail({
-            from: `"InXource" <${process.env.SMTP_USER}>`,
+            from: `"InXource" <${process.env._SMTP_USER}>`,
             to: email,
             subject: template.subject,
             html: template.html,
