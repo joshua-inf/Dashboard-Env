@@ -39,7 +39,7 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source . \
-          --update-secrets=OPENAI_API_KEY=OPENAI_API_KEY:latest,\
-SUPABASE_KEY=NEXT_PUBLIC_SUPABASE_KEY:latest
-    # Note: We map the ENV_VAR_NAME (OPENAI_API_KEY) to the SECRET_NAME (OPENAI_API_KEY)
+          --update-secrets=_OPENAI_KEY=_OPENAI_KEY:latest,\
+          _NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
+    # Note: We map the ENV_VAR_NAME (_OPENAI_KEY) to the SECRET_NAME (_OPENAI_KEY)
     # This step ensures the secrets are available at RUNTIME in Cloud Run.
