@@ -1,8 +1,6 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
-# --- 1. Define where to find the secrets ---
-# IMPORTANT: Map the secret name in Secret Manager to a local environment variable name
 available_secrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
@@ -11,26 +9,28 @@ available_secrets:
       env: '_NEXT_PUBLIC_SUPABASE_KEY'
 
 steps:
-  
-
-  # 2️⃣ Install dependencies
+  # 1️⃣ Install dependencies (Using Corepack to ensure pnpm/npm works)
   - name: node:22
-    entrypoint: npm
-    args: ['install']
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        corepack enable
+        npm install
     env:
       - NODE_ENV=production
 
   # 2️⃣ Build Next.js
-  # We must pass the secrets as ENVs to the build command (npm run build)
   - name: node:22
-    entrypoint: npm 
-    args: ['run', 'build']
-    secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY'] 
-    # Use the names defined in available_secrets block above (OPENAI_KEY and NEXT_PUBLIC_SUPABASE_KEY)
-    # This directly fixes the "Missing credentials" error during the build.
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        corepack enable
+        npm run build
+    secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
 
   # 3️⃣ Deploy to Cloud Run
-  # We now pass the secrets to the deployment command using --update-secrets
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: bash
     args:
@@ -41,7 +41,4 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source . \
-          --update-secrets=_OPENAI_KEY=_OPENAI_KEY:latest,\
-          _NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
-    # Note: We map the ENV_VAR_NAME (_OPENAI_KEY) to the SECRET_NAME (_OPENAI_KEY)
-    # This step ensures the secrets are available at RUNTIME in Cloud Run.
+          --update-secrets=_OPENAI_KEY=_OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
