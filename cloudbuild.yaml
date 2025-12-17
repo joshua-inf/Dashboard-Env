@@ -34,5 +34,6 @@ steps:
           --platform managed \
           --region europe-west4 \
           --allow-unauthenticated \
-          --source . \
+          --image gcr.io/$PROJECT_ID/nextjs-app \
+          --clear-base-image \
           --update-secrets=OPENAI_API_KEY=OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=NEXT_PUBLIC_SUPABASE_KEY:latest
