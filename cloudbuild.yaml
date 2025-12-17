@@ -35,4 +35,4 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source . \
-          --update-secrets=OPENAI_API_KEY=OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
+          --update-secrets=OPENAI_API_KEY=OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=NEXT_PUBLIC_SUPABASE_KEY:latest

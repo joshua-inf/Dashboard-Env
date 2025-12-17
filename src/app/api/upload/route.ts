@@ -5,6 +5,7 @@ import fs from "fs";
 import OpenAI from "openai";
 
 
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
     const openai = new OpenAI({
