@@ -3,14 +3,14 @@ import nextPwa from 'next-pwa'
 const withPWA = nextPwa({
   dest: 'public',
   register: true,
-  skipWaiting: true,
+
   disable: process.env._NODE_ENV === 'development',
 })
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
   experimental: {
-    turbo: false, // disable Turbopack
+    turbo: true, // disable Turbopack
   },
   output: 'standalone',
   distDir: 'build',
