@@ -16,7 +16,17 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# Building with the custom distDir 'build'
+
+# --- ADD ARGS HERE ---
+# These are passed in from cloudbuild.yaml during 'docker build'
+ARG OPENAI_API_KEY
+ARG _NEXT_PUBLIC_SUPABASE_KEY
+
+# Convert ARGs to ENVs so the Next.js build process can see them
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+ENV _NEXT_PUBLIC_SUPABASE_KEY=$_NEXT_PUBLIC_SUPABASE_KEY
+# ---------------------
+
 RUN pnpm run build
 
 # 4. Production Runner Stage
@@ -34,11 +44,12 @@ RUN adduser --system --uid 1001 nextjs
 # IMPORTANT: We copy from 'build' instead of '.next'
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/build/standalone ./
+# Note: Next.js standalone moves static files to [distDir]/static 
+# but the runner expects them at [distDir]/static
 COPY --from=builder --chown=nextjs:nodejs /app/build/static ./build/static
 
 USER nextjs
 
 EXPOSE 3000
 
-# In standalone mode, Next.js moves the custom distDir inside the server
 CMD ["node", "server.js"]
