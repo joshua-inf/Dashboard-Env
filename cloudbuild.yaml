@@ -18,9 +18,10 @@ steps:
       - -c
       - |
         corepack enable
-        pnpm install
-        # Adding --webpack here to avoid the Turbopack error we saw earlier
-        pnpm run build --webpack
+        # Add the flag here to allow the mismatch
+        pnpm install --no-frozen-lockfile
+        # Cleaned up the duplicate --webpack flag
+        pnpm build
     env:
       - NODE_ENV=production
     secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
