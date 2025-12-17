@@ -1,22 +1,30 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
+# --- 1. Map Google Secret names to your App's Variable names ---
+available_secrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
+      env: 'OPENAI_API_KEY'  # Remapped for your code
+    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_SUPABASE_KEY/versions/latest
+      env: '_NEXT_PUBLIC_SUPABASE_KEY'  # Remapped for your code
+
 steps:
-  # 1️⃣ Install & Build (Single container to keep pnpm/env vars alive)
+  # 1️⃣ Build Step
   - name: node:22
     entrypoint: bash
     args:
       - -c
       - |
         corepack enable
-        # --no-frozen-lockfile fixes the ERR_PNPM_OUTDATED_LOCKFILE you saw
         pnpm install --no-frozen-lockfile
-        # --webpack fixes the Next.js 16 build crash
-        pnpm build
+        pnpm run build --webpack
     env:
       - NODE_ENV=production
+    # Use the 'env' names defined in the available_secrets block above
+    secretEnv: ['OPENAI_API_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
 
-  # 2️⃣ Deploy to Cloud Run
+  # 2️⃣ Deployment Step
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: bash
     args:
@@ -27,3 +35,4 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source . \
+          --update-secrets=OPENAI_API_KEY=OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
