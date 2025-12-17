@@ -11,14 +11,11 @@ available_secrets:
       env: '_NEXT_PUBLIC_SUPABASE_KEY'
 
 steps:
-  # 1️⃣ Install pnpm globally (REQUIRED)
-  - name: node:22
-    entrypoint: npm
-    args: ['install', '-g', 'pnpm']
+  
 
   # 2️⃣ Install dependencies
   - name: node:22
-    entrypoint: pnpm
+    entrypoint: npm
     args: ['install']
     env:
       - NODE_ENV=production
@@ -26,8 +23,8 @@ steps:
   # 2️⃣ Build Next.js
   # We must pass the secrets as ENVs to the build command (npm run build)
   - name: node:22
-    entrypoint: pnpm
-    args: ['build']
+    entrypoint: npm 
+    args: ['run', 'build']
     secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY'] 
     # Use the names defined in available_secrets block above (OPENAI_KEY and NEXT_PUBLIC_SUPABASE_KEY)
     # This directly fixes the "Missing credentials" error during the build.
