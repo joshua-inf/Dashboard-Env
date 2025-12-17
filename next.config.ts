@@ -9,9 +9,6 @@ const withPWA = nextPwa({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
-  experimental: {
-    turbo: true, // disable Turbopack
-  },
   output: 'standalone',
   distDir: 'build',
   images: {
