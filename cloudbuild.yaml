@@ -1,30 +1,20 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
-# --- 1. Define where to find the secrets ---
-# IMPORTANT: Map the secret name in Secret Manager to a local environment variable name
-available_secrets:
-  secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
-      env: '_OPENAI_KEY'
-    - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_SUPABASE_KEY/versions/latest
-      env: '_NEXT_PUBLIC_SUPABASE_KEY'
-
 steps:
-  # 1️⃣ Install & Build (Combined to keep pnpm in scope)
+  # 1️⃣ Install & Build (Single container to keep pnpm/env vars alive)
   - name: node:22
     entrypoint: bash
     args:
       - -c
       - |
         corepack enable
-        # Add the flag here to allow the mismatch
+        # --no-frozen-lockfile fixes the ERR_PNPM_OUTDATED_LOCKFILE you saw
         pnpm install --no-frozen-lockfile
-        # Cleaned up the duplicate --webpack flag
+        # --webpack fixes the Next.js 16 build crash
         pnpm build
     env:
       - NODE_ENV=production
-    secretEnv: ['_OPENAI_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
 
   # 2️⃣ Deploy to Cloud Run
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
@@ -37,4 +27,3 @@ steps:
           --region europe-west4 \
           --allow-unauthenticated \
           --source . \
-          --update-secrets=_OPENAI_KEY=_OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=_NEXT_PUBLIC_SUPABASE_KEY:latest
