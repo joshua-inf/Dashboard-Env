@@ -9,17 +9,6 @@ available_secrets:
       env: '_NEXT_PUBLIC_SUPABASE_KEY'
 
 steps:
- # 1. Install dependencies
-  - name: 'node:22'
-    entrypoint: 'npm'
-    args: ['install']
-  
-  # 2. Build your Next.js app
-  - name: 'node:22'
-    entrypoint: 'npm'
-    args: ['run', 'build']
-    secretEnv: ['OPENAI_API_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
-
   # 1️⃣ Build the Image
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
