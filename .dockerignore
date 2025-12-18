@@ -1,0 +1,10 @@
+node_modules
+old_app
+node_modules
+.git
+.vscode
+*.log
+dist
+.idea
+GitHub
+.github
