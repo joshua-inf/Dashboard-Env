@@ -19,6 +19,22 @@ steps:
     entrypoint: 'npm'
     args: ['run', 'build']
     secretEnv: ['OPENAI_API_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
+
+  # 1️⃣ Build the Image
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker build \
+          --build-arg OPENAI_API_KEY=$$OPENAI_API_KEY \
+          --build-arg _NEXT_PUBLIC_SUPABASE_KEY=$$_NEXT_PUBLIC_SUPABASE_KEY \
+          -t gcr.io/$PROJECT_ID/nextjs-app .
+    secretEnv: ['OPENAI_API_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
+
+    # 2️⃣ PUSH the Image (This fixes your "Not Found" error)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/nextjs-app']
   
   # 3️⃣ Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
