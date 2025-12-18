@@ -6,7 +6,7 @@ available_secrets:
     - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
       env: 'OPENAI_API_KEY'
     - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_SUPABASE_KEY/versions/latest
-      env: '_NEXT_PUBLIC_SUPABASE_KEY'
+      env: 'NEXT_PUBLIC_SUPABASE_KEY'
 
 steps:
   # 1. Install dependencies
@@ -14,12 +14,17 @@ steps:
     entrypoint: 'npm'
     args: ['install']
 
-  # 2. Build your Next.js app
+  # 2. Build your Next.js app 
+  # Added 'secretEnv' so the build can "see" the Supabase key for static generation
   - name: 'node:22'
-    entrypoint: 'npm'
-    args: ['run', 'build']
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        npm run build
+    secretEnv: ['NEXT_PUBLIC_SUPABASE_KEY']
 
-  # 3️⃣ Deploy to Cloud Run
+  # 3. Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
     args:
@@ -29,4 +34,5 @@ steps:
           --platform managed \
           --region europe-west4 \
           --allow-unauthenticated \
-          --source .
+          --source . \
+          --set-secrets="OPENAI_API_KEY=OPENAI_KEY:latest"
