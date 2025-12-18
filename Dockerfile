@@ -22,7 +22,6 @@ RUN echo "--- CHECKING ROOT DIRECTORY ---" && ls -F
 RUN echo "--- CHECKING BUILD DIRECTORY ---" && ls -R build/ || echo "build folder not found"
 # ---------------------
 
-USER nextjs
 
 EXPOSE 3000
 
