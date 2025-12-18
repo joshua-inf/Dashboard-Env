@@ -9,7 +9,6 @@ const withPWA = nextPwa({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
-  output: 'standalone',
   distDir: 'build',
   images: {
     remotePatterns: [
