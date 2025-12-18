@@ -25,7 +25,6 @@ COPY --from=builder /app/build/standalone ./
 
 # Debug step to see exactly where files landed
 RUN echo "--- ROOT FOLDER ---" && ls -F
-RUN echo "--- STATIC ASSETS CHECK ---" && ls -R build/static
 
 EXPOSE 3000
 
