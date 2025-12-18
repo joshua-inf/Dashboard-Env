@@ -8,11 +8,11 @@ COPY . .
 ARG OPENAI_API_KEY
 ARG _NEXT_PUBLIC_SUPABASE_KEY
 ENV OPENAI_API_KEY=$OPENAI_API_KEY
-ENV _NEXT_PUBLIC_SUPABASE_KEY=$NEXT_PUBLIC_SUPABASE_KEY
+ENV _NEXT_PUBLIC_SUPABASE_KEY=$_NEXT_PUBLIC_SUPABASE_KEY
 
 RUN npm run build
 
-# Stage 2: Runner (Now running as root)
+# Stage 2: Runner
 FROM node:22-slim AS runner
 WORKDIR /app
 
@@ -20,12 +20,17 @@ ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
-# Copy essentials (Note: removing 'build/' prefix for static if needed)
+# For 'npm start' to work, we need:
+# 1. The package.json (to find the 'start' script)
+COPY --from=builder /app/package*.json ./
+# 2. The FULL node_modules (production only)
+COPY --from=builder /app/node_modules ./node_modules
+# 3. The entire build folder (where you set distDir: 'build')
+COPY --from=builder /app/build ./build
+# 4. Public assets
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/build/standalone ./
-COPY --from=builder /app/build/static ./build/static
 
 EXPOSE 3000
 
-# This "sh -c" syntax is the most aggressive way to force the port
-CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node server.js"]
+# Use npm start to launch 'next start'
+CMD ["npm", "start"]
