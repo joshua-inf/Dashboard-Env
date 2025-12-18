@@ -9,22 +9,16 @@ available_secrets:
       env: '_NEXT_PUBLIC_SUPABASE_KEY'
 
 steps:
-  # 1️⃣ Build the Image
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        docker build \
-          --build-arg OPENAI_API_KEY=$$OPENAI_API_KEY \
-          --build-arg _NEXT_PUBLIC_SUPABASE_KEY=$$_NEXT_PUBLIC_SUPABASE_KEY \
-          -t gcr.io/$PROJECT_ID/nextjs-app .
-    secretEnv: ['OPENAI_API_KEY', '_NEXT_PUBLIC_SUPABASE_KEY']
+  # 1. Install dependencies
+  - name: 'node:22'
+    entrypoint: 'npm'
+    args: ['install']
 
-    # 2️⃣ PUSH the Image (This fixes your "Not Found" error)
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/nextjs-app']
-  
+  # 2. Build your Next.js app
+  - name: 'node:22'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+
   # 3️⃣ Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
@@ -32,10 +26,7 @@ steps:
       - -c
       - |
         gcloud run deploy nextjs-app \
-          --image gcr.io/$PROJECT_ID/nextjs-app \
-          --region europe-west4 \
           --platform managed \
+          --region europe-west4 \
           --allow-unauthenticated \
-          --clear-base-image \
-          --port 3000 \
-          --update-secrets=OPENAI_API_KEY=OPENAI_KEY:latest,_NEXT_PUBLIC_SUPABASE_KEY=NEXT_PUBLIC_SUPABASE_KEY:latest
+          --source .
