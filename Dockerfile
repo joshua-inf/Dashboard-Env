@@ -1,12 +1,12 @@
-FROM node:18 AS builder
+FROM node:22 AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
-RUN pnpm run build
+RUN pnpm build
 
 WORKDIR /app
 
