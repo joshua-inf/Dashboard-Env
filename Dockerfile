@@ -17,15 +17,15 @@ FROM node:22-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
 
-# Copy files directly into root
+# Copy essentials (Note: removing 'build/' prefix for static if needed)
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/build/standalone ./
-
-# Debug step to see exactly where files landed
-RUN echo "--- ROOT FOLDER ---" && ls -F
+COPY --from=builder /app/build/static ./build/static
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# This "sh -c" syntax is the most aggressive way to force the port
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node server.js"]
