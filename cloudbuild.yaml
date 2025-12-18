@@ -3,8 +3,7 @@ options:
 
 available_secrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/OPENAI_KEY/versions/latest
-      env: 'OPENAI_API_KEY'
+    # We only keep secrets here that are needed DURING the build process
     - versionName: projects/$PROJECT_ID/secrets/NEXT_PUBLIC_SUPABASE_KEY/versions/latest
       env: 'NEXT_PUBLIC_SUPABASE_KEY'
 
@@ -15,7 +14,7 @@ steps:
     args: ['install']
 
   # 2. Build your Next.js app 
-  # Added 'secretEnv' so the build can "see" the Supabase key for static generation
+  # NEXT_PUBLIC vars must be available here to be baked into the JS
   - name: 'node:22'
     entrypoint: 'bash'
     args:
