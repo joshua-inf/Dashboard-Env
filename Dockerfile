@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 
+# Build the application
 RUN npm run build
 
 # Stage 2: Runner
@@ -15,17 +16,10 @@ ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=8080
 
-# For 'npm start' to work, we need:
-# 1. The package.json (to find the 'start' script)
-COPY --from=builder /app/package*.json ./
-# 2. The FULL node_modules (production only)
-COPY --from=builder /app/node_modules ./node_modules
-# 3. The entire build folder (where you set distDir: 'build')
-COPY --from=builder /app/build ./build
-# 4. Public assets
-COPY --from=builder /app/public ./public
+# Copy everything from the builder stage to the runner stage
+COPY --from=builder /app ./
 
 EXPOSE 8080
 
-# Use npm start to launch 'next start'
+# Use npm start to launch
 CMD ["npm", "start"]
