@@ -11,6 +11,9 @@ FROM node:22-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
 # In default mode, we need the production dependencies
 COPY --from=builder /app/node_modules ./node_modules
 # Copy the hidden .next folder (where the chunks live)
