@@ -1,41 +1,10 @@
-# Dependencies
 node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Next.js build output
-.next
-build
-out
-
-# Environment variables
-.env
-.env.local
-.env.development
-.env.test
-.env.production
-.env*.local
-
-# Version control
+old_app
+node_modules
 .git
-.gitignore
-.gitattributes
-.hg
-.svn
-
-# Docker files
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-# OS metadata
-.DS_Store
-Thumbs.db
-
-# Logs and Documentation
-*.md
-LICENSE
-.github
 .vscode
+*.log
+dist
+.idea
+GitHub
+.github
