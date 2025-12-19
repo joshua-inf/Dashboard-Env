@@ -4,31 +4,20 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-
-# Build the application
 RUN npm run build
 
 # Stage 2: Runner
 FROM node:22-slim AS runner
 WORKDIR /app
-
-
-
 ENV NODE_ENV=production
-ENV HOSTNAME="0.0.0.0"
-ENV PORT=3000
 
-
-
-# 1. Copy the standalone build (the server)
-COPY --from=builder /app/build/standalone ./
-# 2. Copy the static assets (THIS FIXES THE 404s)
-# Note: standalone server looks for static files in [distDir]/static
-COPY --from=builder /app/build/static ./build/static
-# 3. Copy public assets (Logos, favicons, etc)
+# In default mode, we need the production dependencies
+COPY --from=builder /app/node_modules ./node_modules
+# Copy the hidden .next folder (where the chunks live)
+COPY --from=builder /app/.next ./.next
+# Copy public assets and package.json
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
-
-# Use npm start to launch
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
