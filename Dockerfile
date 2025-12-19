@@ -13,7 +13,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
-ENV PORT=3000
+ENV PORT=8080
 
 # For 'npm start' to work, we need:
 # 1. The package.json (to find the 'start' script)
@@ -25,7 +25,7 @@ COPY --from=builder /app/build ./build
 # 4. Public assets
 COPY --from=builder /app/public ./public
 
-EXPOSE 3000
+EXPOSE 8080
 
 # Use npm start to launch 'next start'
 CMD ["npm", "start"]
