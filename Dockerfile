@@ -1,4 +1,4 @@
-# Stage 1: Build
+# ---------- Build ----------
 FROM node:22-slim AS builder
 WORKDIR /app
 
@@ -8,19 +8,18 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: Runner
+# ---------- Run ----------
 FROM node:22-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+
+# Cloud Run provides PORT automatically
 ENV HOSTNAME=0.0.0.0
 
-# Copy standalone server
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# Copy standalone output
+COPY --from=builder /app ./
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", ".next/standalone/server.js"]
