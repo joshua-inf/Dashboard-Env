@@ -7,7 +7,7 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = withPWA({
   experimental: {
-    turbo: false, // force webpack, required for next-pwa
+    // turbo: false, // force webpack, required for next-pwa
   },
   images: {
     remotePatterns: [
