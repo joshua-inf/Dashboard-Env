@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
@@ -7,11 +6,9 @@ const withPWA = require('next-pwa')({
 })
 
 const nextConfig = withPWA({
-  // FORCE webpack (required for next-pwa)
   experimental: {
-    turbo: false,
+    turbo: false, // force webpack, required for next-pwa
   },
-
   images: {
     remotePatterns: [
       {

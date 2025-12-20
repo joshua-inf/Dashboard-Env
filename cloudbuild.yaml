@@ -1,7 +1,26 @@
 options:
   logging: CLOUD_LOGGING_ONLY
- 
+
 steps:
+  # 1. Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'europe-west4-docker.pkg.dev/trybae-457418/xinsource/nextdocker/nextdocker',
+        '.'
+      ]
+
+  # 2. Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'europe-west4-docker.pkg.dev/trybae-457418/xinsource/nextdocker/nextdocker'
+      ]
+
+  # 3. Deploy Docker image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
@@ -9,9 +28,13 @@ steps:
         'run',
         'deploy',
         'nextjs-app',
-        '--source', '.',
-        '--region', 'europe-west4',
-        '--platform', 'managed',
+        '--image',
+        'europe-west4-docker.pkg.dev/trybae-457418/xinsource/nextdocker/nextdocker',
+        '--region',
+        'europe-west4',
+        '--platform',
+        'managed',
         '--allow-unauthenticated',
-        '--timeout', '300'
+        '--timeout',
+        '300'
       ]
