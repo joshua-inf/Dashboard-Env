@@ -4,17 +4,22 @@ const withPWA = require('next-pwa')({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-});
+})
 
 const nextConfig = withPWA({
-  eslint: {
-    ignoreDuringBuilds: true,
+  // FORCE webpack (required for next-pwa)
+  experimental: {
+    turbo: false,
   },
-  output: "standalone",
-  distDir: "build",
-  images: {
-    domains: ['gaicgetnnwptxbqooywd.supabase.co'],
-  },
-});
 
-module.exports = nextConfig;
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'gaicgetnnwptxbqooywd.supabase.co',
+      },
+    ],
+  },
+})
+
+module.exports = nextConfig
