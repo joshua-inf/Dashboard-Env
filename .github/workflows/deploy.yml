@@ -1,0 +1,50 @@
+name: Build & Deploy Next.js with Bun
+
+on:
+  push:
+    branches:
+      - main  # runs on pushes to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Install Bun
+      - name: Install Bun
+        run: curl -fsSL https://bun.sh/install | bash
+
+      # Add Bun to PATH
+      - name: Add Bun to PATH
+        run: echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: bun install
+
+      # 4. Build Next.js
+      - name: Build Next.js
+        run: bun run build
+
+      # 5. Deploy to VPS via SSH (needs secrets)
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            cd /root/trybae-inxource/Dashboard-Env
+            # Stop old PM2 app
+            pm2 stop nextjs-app || true
+            pm2 delete nextjs-app || true
+            # Copy files (assuming repo is deployed to same folder)
+            rsync -avz --delete ./ ./
+            # Start app
+            pm2 start bun --name nextjs-app -- run next start
+            pm2 save
