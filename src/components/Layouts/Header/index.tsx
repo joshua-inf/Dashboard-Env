@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Download, KeyRound, PowerIcon, User2Icon, QrCodeIcon } from "lucide-react";
+import { Copy, Download, KeyRound, PowerIcon, User2Icon, QrCodeIcon, ShoppingBag, Store } from "lucide-react";
 import { QRCodeCanvas } from 'qrcode.react';
 import DarkModeSwitcher from "./DarkModeSwitcher";
 import DropdownNotification from "../../Notifications/DropdownNotification";
@@ -94,117 +94,126 @@ const Header = ({
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-        <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center px-2 py-3">
           {/* Left Section */}
-          <div className="flex items-center gap-4">
+          <div className="flex justify-between grow items-center gap-4">
             {/* Hamburger Menu */}
-            {userData && isOrgSelected && (
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 group"
-                aria-label="Toggle sidebar"
-              >
-                <div className="w-6 h-6 relative">
-                  <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? 'rotate-45 translate-y-0' : '-translate-y-1.5'}`} />
-                  <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? 'opacity-0' : 'opacity-100'}`} />
-                  <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? '-rotate-45 translate-y-0' : 'translate-y-1.5'}`} />
-                </div>
-              </button>
-            )}
-
-            {/* Logo and Brand */}
-            <Link href="/" className="flex items-center gap-4 group">
-              <div className="flex flex-col gap-2">
-                {businessData ?
-                  <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
-                    {businessData.business_name}
-                  </span>
-                  :
-                  <div>
-                    <LightDarkLogo className="h-6" />
+            <div className="flex gap-2">
+              {userData && isOrgSelected && (
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 group"
+                  aria-label="Toggle sidebar"
+                >
+                  <div className="w-6 h-6 relative">
+                    <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? 'rotate-45 translate-y-0' : '-translate-y-1.5'}`} />
+                    <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? 'opacity-0' : 'opacity-100'}`} />
+                    <span className={`absolute top-1/2 left-1/2 w-4 h-0.5 bg-gray-600 dark:bg-gray-300 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${sidebarOpen ? '-rotate-45 translate-y-0' : 'translate-y-1.5'}`} />
                   </div>
-                }
-              </div>
-            </Link>
+                </button>
+              )}
 
-            {/* Order Link Generator */}
-            {userData && businessData && (
-              <button
-                onClick={() => setModalOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center gap-2 text-sm font-medium"
-              >
-                <KeyRound size={16} />
-                <span className="hidden sm:block">Create Order Link</span>
-              </button>
-            )}
-          </div>
-
-          {/* Right Section */}
-          <div className="flex items-center gap-4">
-            {userData ? (
-              <>
-                {/* Search Bar */}
-                {/* <div className="hidden md:block">
-                  <Search />
-                </div> */}
-
-                {/* Notifications */}
-                <DropdownNotification />
-
-                {/* Dark Mode Toggle */}
-                <DarkModeSwitcher />
-
-                {/* User Menu */}
-                <div className="relative">
-                  <button
-                    onClick={() => setOpenOptions(!openOptions)}
-                    className="w-10 h-10 dark:bg-gray-900 bg-gray-100  rounded-full flex items-center justify-center text-gray-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                  >
-                    {userData?.name?.[0]?.toUpperCase() || "U"}
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {openOptions && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setOpenOptions(false)}
-                      />
-                      <div className="absolute right-0 mt-2 w-48 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 z-50 overflow-hidden">
-                        <div className="p-2 space-y-1">
-                          <button className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200">
-                            <User2Icon size={16} />
-                            Profile
-                          </button>
-                          <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-                          >
-                            <PowerIcon size={16} />
-                            Logout
-                          </button>
-                        </div>
+              <div className="flex flex-col-reverse sm:flex-row gap-3">
+                {/* Logo and Brand */}
+                <Link href="/" className="flex items-center gap-4 group">
+                  <div className="flex flex-col gap-2">
+                    {businessData ?
+                      <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+                        {businessData.business_name}
+                      </span>
+                      :
+                      <div>
+                        <LightDarkLogo className="h-2" />
                       </div>
-                    </>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="flex gap-3">
-                <Link
-                  href="/signin"
-                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 text-sm font-medium"
-                >
-                  Login
+                    }
+                  </div>
                 </Link>
-                <Link
-                  href="/signup"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 text-sm font-medium shadow-md"
-                >
-                  Sign Up
-                </Link>
+
+                {/* Order Link Generator */}
+                {userData && businessData && (
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center gap-2 text-sm "
+                  >
+                    <Store size={16} />
+                    <span className="hidden sm:block">Create Store Link</span>
+                  </button>
+                )}
               </div>
-            )}
+            </div>
+
+
+            {/* Right Section */}
+            <div className="flex items-center gap-2">
+              {userData ? (
+                <>
+                  {/* Search Bar */}
+                  {/* <div className="hidden md:block">
+                    <Search />
+                  </div> */}
+
+                  {/* Notifications */}
+                  {
+                    businessData && (
+                      <DropdownNotification />
+                    )
+                  }
+
+                  {/* Dark Mode Toggle */}
+                  {/* <DarkModeSwitcher /> */}
+
+                  {/* User Menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setOpenOptions(!openOptions)}
+                      className="w-10 h-10 dark:bg-gray-900 bg-gray-100  rounded-full flex items-center justify-center text-gray-600 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      {userData?.name?.[0]?.toUpperCase() || "U"}
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {openOptions && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-40"
+                          onClick={() => setOpenOptions(false)}
+                        />
+                        <div className="absolute right-0 mt-2 w-48 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 z-50 overflow-hidden">
+                          <div className="p-2 space-y-1">
+                            <button className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200">
+                              <User2Icon size={16} />
+                              Profile
+                            </button>
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+                            >
+                              <PowerIcon size={16} />
+                              Logout
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="flex gap-3">
+                  <Link
+                    href="/signin"
+                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 text-sm font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 text-sm font-medium shadow-md"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

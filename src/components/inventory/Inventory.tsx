@@ -178,7 +178,7 @@ const Inventory = () => {
                                                     item.sales,
                                                     0
                                                 )}</td>
-                                                <td className="p-3">${item.price}</td>
+                                                <td className="p-3">K{item.price.toFixed(2)}</td>
                                                 <td className="p-3 whitespace-nowrap">
                                                     <CheckStock stock={item.quantity} orders={item.sales} />
                                                 </td>

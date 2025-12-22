@@ -38,36 +38,40 @@ export const ProductsAndServices = () => {
     }, [getProducts])
     return (
         <div className='  dark:text-gray-200'>
+            <PromotionDialog
+                isOpen={isDialogOpen}
+                onClose={() => setIsDialogOpen(false)}
+                products={productData || []}
+            />
+            <UploadDialog
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                getProducts={() => getProducts()}
+            />
+            <AIUploadModal
+                getProduct={getProducts}
+                isOpen={aiOpenModal}
+                onClose={() => setAiOpenModal(false)}
+            />
             {/* pop up for adding products */}
-            <div className='flex justify-between z-1'>
+            <div className='flex flex-col md:flex-row gap-2 justify-between z-1'>
                 <div className='text-2xl font-bold dark:text-gray-200'>Products and Services</div>
                 <div className='flex gap-4'>
-                    <PromotionDialog
-                        isOpen={isDialogOpen}
-                        onClose={() => setIsDialogOpen(false)}
-                        products={productData || []}
-                    />
                     <button
                         onClick={() => setIsDialogOpen(true)}
                         className="flex items-center gap-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 py-2 px-4 font-medium text-sm"
                     >
                         <Megaphone className="size-4 text-blue-600 dark:text-blue-400" />
-                        <span>Promotion</span>
+                        <span className='hidden md:block'>Promotion</span>
                     </button>
-                    <UploadDialog
-                        open={openModal}
-                        onClose={() => setOpenModal(false)}
-                        getProducts={() => getProducts()}
-                    />
+
                     <button onClick={() => setOpenModal(true)} className='flex items-center rounded-md gap-3 border border-black dark:border-gray-600 py-1 px-3 dark:text-gray-200'>
                         <PlusIcon className='size-4' />
-                        Add Products/Services
+                        <span className='hidden md:block'>
+                            Add Products/Services
+                        </span>
                     </button>
-                    <AIUploadModal
-                        getProduct={getProducts}
-                        isOpen={aiOpenModal}
-                        onClose={() => setAiOpenModal(false)}
-                    />
+
                     <button
                         onClick={() => setAiOpenModal(true)}
                         className='flex items-center rounded-md gap-2 border border-purple-600 dark:border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all duration-200 py-1.5 px-3 font-medium text-sm shadow-sm'
@@ -75,7 +79,9 @@ export const ProductsAndServices = () => {
                         <svg className='size-4' fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        Upload with AI
+                        <span className='hidden md:block'>
+                            Upload with AI
+                        </span>
                     </button>
                 </div>
             </div>

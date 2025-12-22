@@ -6,6 +6,7 @@ const withPWA = require('next-pwa')({
 })
 
 const nextConfig = withPWA({
+  turbopack:{},
   experimental: {
     // turbo: false, // force webpack, required for next-pwa
   },

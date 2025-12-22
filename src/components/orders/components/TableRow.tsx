@@ -228,10 +228,6 @@ export const TableRow: React.FC<TableRowProps> = ({ order, setOrderData }) => {
                     <StatusBadge status={order.order_status} type="order" />
                 </td>
 
-                {/* Order Date */}
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {formatDate(order.created_at)}
-                </td>
 
                 {/* Customer Name */}
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -243,18 +239,6 @@ export const TableRow: React.FC<TableRowProps> = ({ order, setOrderData }) => {
                             {order.customers.email}
                         </div>
                     )}
-                </td>
-
-                {/* Order ID */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <code className="text-sm font-mono text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                        {order.order_id}
-                    </code>
-                </td>
-
-                {/* Order Amount */}
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
-                    {formatCurrency(order.total_amount)}
                 </td>
 
                 {/* Payment Status */}

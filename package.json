@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "NODE_OPTIONS='--max-old-space-size=1024' next build --webpack",
-    "start": "next start ",
-    "lint": "eslint"
+    "dev": "bun run next dev",
+    "build": "bun run next build --webpack",
+    "start": "bun run next start",
+    "lint": "bun run eslint"
   },
   "engines": {
     "node": "22"
@@ -55,7 +55,6 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
     "@types/bcrypt": "^6.0.0",
     "@types/js-cookie": "^3.0.6",

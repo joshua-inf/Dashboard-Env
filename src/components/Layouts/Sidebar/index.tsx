@@ -135,30 +135,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </button>
         </div>
 
-        {/* User Profile Quick Info */}
-        <div className="px-4 hidden py-4 border-b border-gray-200/50 dark:border-gray-700/50">
-          <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl shadow-sm">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center shadow-md">
-              <span className="text-white font-semibold text-sm">JD</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-800 dark:text-gray-200 truncate text-sm">
-                John Doe
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                Premium Plan
-              </p>
-            </div>
-            <div className="flex flex-col items-end">
-              <div className="w-2 h-2 bg-green-400 rounded-full shadow-sm"></div>
-              <div className="w-2 h-2 bg-green-400 rounded-full opacity-60 mt-1"></div>
-            </div>
-          </div>
-        </div>
-
         {/* Navigation Menu */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <nav className="flex-1 overflow-y-auto px-3 py-6">
+          <nav className="flex-1 overflow-y-auto px-3 pt-6 py-[100px]">
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex} className="mb-8 last:mb-0">
                 <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4 px-3">
@@ -179,25 +158,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             ))}
           </nav>
 
-          {/* Sidebar Footer
-          <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-md">
-                  <SparklesIcon className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">
-                  Pro Features
-                </span>
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
-                Upgrade to unlock advanced AI capabilities and analytics
-              </p>
-              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
-                Upgrade Now
-              </button>
-            </div>
-          </div> */}
         </div>
       </aside>
 

@@ -73,7 +73,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto pt-16 md:pt-20 transition-all bg-light duration-300">
+        <main className="flex-1 overflow-y-auto pt-20 transition-all bg-light duration-300">
           <div className="w-full h-full">
             {/* Animated background elements with enhanced effects */}
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -129,7 +129,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
                   </div>
                 </div>
               } >
-                <div className="">
+                <div >
                   {
                     showSub ?
                       <SubscriptionWall setOpen={handleSubscriptionClose} />

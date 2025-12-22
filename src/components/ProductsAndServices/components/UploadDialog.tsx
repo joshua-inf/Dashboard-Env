@@ -129,8 +129,8 @@ export default function UploadDialog({
 
 
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-            <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto z-[9999] bg-white dark:bg-boxdark rounded-lg shadow-lg p-6">
+        <Dialog open={open} onOpenChange={() => onClose()}>
+            <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto z-[9999] bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <DialogHeader>
                     <DialogTitle className="text-gray-900 dark:text-gray-200">
                         Add Product/Service

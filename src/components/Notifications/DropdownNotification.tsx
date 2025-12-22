@@ -142,10 +142,10 @@ const DropdownNotification = () => {
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
-      <li className="relative">
+      <div className="relative">
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-105"
+          className="relative flex h-5 w-10 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-105"
         >
           {/* Notification Badge */}
           {unreadCount > 0 && (
@@ -292,7 +292,7 @@ const DropdownNotification = () => {
             )}
           </div>
         )}
-      </li>
+      </div>
     </ClickOutside>
   );
 };
