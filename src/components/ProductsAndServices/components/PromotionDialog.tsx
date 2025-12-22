@@ -125,7 +125,7 @@ const PromotionDialog = ({ isOpen, onClose, products }: { isOpen: boolean; onClo
     if (!isOpen) return null;
 
     return (
-        <Dialog open={open} onOpenChange={() => onClose()}>
+        <Dialog open={isOpen} onOpenChange={() => onClose()}>
             <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto z-[9999] bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <DialogHeader>
                     <DialogTitle className="text-gray-900 dark:text-gray-200">
