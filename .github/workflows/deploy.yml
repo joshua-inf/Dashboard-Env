@@ -46,5 +46,5 @@ jobs:
             # Copy files (assuming repo is deployed to same folder)
             rsync -avz --delete ./ ./
             # Start app
-            pm2 start bun --name nextjs-app -- run next start
+            pm2 start --name nextjs-app --interpreter bash -- bash -c "bun run start"
             pm2 save
