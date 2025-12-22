@@ -1,4 +1,4 @@
-name: Build & Deploy Next.js with Bun
+name: Deploy Next.js to VPS
 
 on:
   push:
@@ -6,31 +6,15 @@ on:
       - main-prime  # runs on pushes to main branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
-      - name: Checkout code
+      # 1. Checkout code (needed only for rsync if copying locally)
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2. Install Bun
-      - name: Install Bun
-        run: curl -fsSL https://bun.sh/install | bash
-
-      # Add Bun to PATH
-      - name: Add Bun to PATH
-        run: echo "$HOME/.bun/bin" >> $GITHUB_PATH
-
-      # 3. Install dependencies
-      - name: Install dependencies
-        run: bun install
-
-      # 4. Build Next.js
-      - name: Build Next.js
-        run: bun run build
-
-      # 5. Deploy to VPS via SSH (needs secrets)
+      # 2. SSH into VPS and deploy
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -39,12 +23,27 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            cd trybae-inxource/Dashboard-Env
+            # Go to project folder
+            cd /root/trybae-inxource/Dashboard-Env
+
             # Stop old PM2 app
             pm2 stop nextjs-app || true
             pm2 delete nextjs-app || true
-            # Copy files (assuming repo is deployed to same folder)
-            rsync -avz --delete ./ ./
-            # Start app
-            pm2 start --name nextjs-app --interpreter bash -- bash -c "bun run start"
+
+            # Force pull latest code
+            git reset --hard
+            git clean -fd
+            git pull origin main-prime
+
+            # Install dependencies with Bun
+            bun install
+
+            # Build with Node.js and increased memory
+            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+
+            # Start app with Bun + PM2
+            pm2 start npm --name nextjs-app -- start 
+
+            # Enable PM2 startup on server reboot
             pm2 save
+            pm2 startup
