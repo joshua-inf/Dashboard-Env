@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            cd /root/trybae-inxource/Dashboard-Env
+            cd trybae-inxource/Dashboard-Env
             # Stop old PM2 app
             pm2 stop nextjs-app || true
             pm2 delete nextjs-app || true
